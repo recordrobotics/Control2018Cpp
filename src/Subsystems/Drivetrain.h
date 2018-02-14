@@ -18,6 +18,8 @@ private:
 
 	frc::Spark left_motor1, left_motor2, right_motor1, right_motor2;
 
+	double m_left, m_right;
+
 	DrivewithJoystick default_command;
 
 public:
@@ -25,5 +27,8 @@ public:
 	~Drivetrain();
 	void InitDefaultCommand() override;
 	void drive(double left, double right);
+
+	double getLeft() { return m_left; }
+	double getRight() { return m_right; }
 };
 

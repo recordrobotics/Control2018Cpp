@@ -15,7 +15,7 @@ public:
 	static bool init(const char *path);
 	static void end();
 
-	static void log(const char *mes);
+	static void log(const char *format, ...);
 
 private:
 	Logger() { }

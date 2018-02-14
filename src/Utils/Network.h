@@ -19,8 +19,10 @@ typedef uint32_t ip_t;
 #define RECEIVE_TIMEOUT_S     0
 #define RECEIVE_TIMEOUT_US    200
 #define USLEEP_TIME           20
-#define SEND_SIG              "9.S;"
+#define SEND_SIG              "q{A#;"
 #define RECEIVE_LEN           256
+#define DOESNT_SEE_CUBE       1.5
+#define SEE_CUBE_TIMEOUT      200
 
 class Network {
 public:
@@ -32,6 +34,8 @@ public:
 
 	inline static double getCameraX() { return camera_x; }
 	inline static double getCameraY() { return camera_y; }
+
+	inline static bool seesCube() { return sees_cube; }
 
 private:
 	Network() { }
@@ -49,6 +53,8 @@ private:
 
     static double camera_x;
     static double camera_y;
+
+    static bool sees_cube;
 };
 
 #endif /* SRC_UTILS_NETWORK_H_ */

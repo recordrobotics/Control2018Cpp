@@ -9,9 +9,11 @@
 #include "../RobotMap.h"
 #include "../Commands/DrivewithJoystick.h"
 
+#include "../Utils/Logger.h"
+
 Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
 		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
-		default_command()
+		default_command(), m_left(0.0), m_right(0.0)
 {
 
 }
@@ -20,10 +22,15 @@ Drivetrain::~Drivetrain() {
 }
 
 void Drivetrain::drive(double left, double right) {
-	left_motor1.Set(left);
-	left_motor2.Set(left);
-	right_motor1.Set(right);
-	right_motor2.Set(right);
+	m_left = left;
+	m_right = right;
+
+	Logger::log("motors: %f %f", m_left, m_right);
+
+	left_motor1.Set(-m_left);
+	left_motor2.Set(-m_left);
+	right_motor1.Set(m_right);
+	right_motor2.Set(m_right);
 }
 
 void Drivetrain::InitDefaultCommand() {

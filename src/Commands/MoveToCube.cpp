@@ -5,6 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <cmath>
+
+#include "../Utils/Logger.h"
+
 #include "MoveToCube.h"
 
 #include "../Robot.h"
@@ -23,18 +27,30 @@ void MoveToCube::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void MoveToCube::Execute() {
+	if(!Network::seesCube()) {
+		Robot::drivetrain.drive(0.0, 0.0);
+		return;
+	}
+
 	double x = Network::getCameraX();
 
-	double sens = 0.3;
-	double max = 0.2;
-	double v = x * sens;
+	double sens = 1.0;
+	double d_sens = 1.0;
+	double max = 0.3;
+	double v = 0.0;
+	double e = 0.001;
+
+	if(x > e || x < -e)
+		v = x * sens + d_sens * Robot::drivetrain.getLeft() * x / fabs(x);
 
 	if(v > max)
 		v = max;
 	else if(v < -max)
 		v = -max;
 
-	Robot::drivetrain.drive(v, -v);
+	Logger::log("v1: %f, v2: %f", x * sens, d_sens * Robot::drivetrain.getLeft() * x / fabs(x));
+
+	Robot::drivetrain.drive(-v, v);
 }
 
 // Make this return true when this Command no longer needs to run execute()

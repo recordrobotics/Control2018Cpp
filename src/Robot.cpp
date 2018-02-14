@@ -15,6 +15,7 @@
 
 #include "Utils/Network.h"
 #include "Utils/Logger.h"
+#include "Utils/Timer.h"
 
 Drivetrain Robot::drivetrain;
 OI Robot::oi;
@@ -25,9 +26,10 @@ Robot::Robot() : m_period(0.01)
 }
 
 void Robot::RobotInit() {
+	Timer::init();
+	Logger::init("/log/log.txt");
 	Network::init();
-	Logger::init("~/log.txt");
-	Logger::log("Begin!\n");
+	Logger::log("Begin!");
 
 	m_autonomousCommand = &m_moveToCubeCommand;
 }

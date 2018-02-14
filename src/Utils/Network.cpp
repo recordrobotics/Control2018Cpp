@@ -14,6 +14,9 @@
 #include <stdio.h>
 #include <Utils/Network.h>
 
+#include "Logger.h"
+#include "Timer.h"
+
 #include "pack2.h"
 
 bool Network::socket_init = false;
@@ -23,17 +26,21 @@ int Network::n_fd = 0;
 pthread_t Network::thread;
 double Network::camera_x = 0.0;
 double Network::camera_y = 0.0;
+bool Network::sees_cube = false;
 
 void Network::init()
 {
 	socket_init = false;
     thread_running = false;
     thread_should_run = false;
+    camera_x = 0.0;
+    camera_y = 0.0;
+    sees_cube = false;
     n_fd = 0;
     memset(&thread, 0, sizeof(pthread_t));
 
     if((n_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-    	printf("Error creating socket\n");
+    	Logger::log("Error creating socket");
     	return;
     }
 
@@ -46,7 +53,7 @@ void Network::init()
     n_addr.sin_port = htons(LOCAL_PORT);
 
     if(bind(n_fd, (struct sockaddr*)&n_addr, sizeof(n_addr)) < 0) {
-    	printf("Socket binding failed\n");
+    	Logger::log("Socket binding failed");
     	return;
     }
 
@@ -54,11 +61,15 @@ void Network::init()
     tv.tv_sec = RECEIVE_TIMEOUT_S;
     tv.tv_usec = RECEIVE_TIMEOUT_US;
     if (setsockopt(n_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
-    	printf("Could not set timeout\n");
+    	Logger::log("Could not set timeout");
     	return;
     }
 
+    Logger::log("Network init");
+
     socket_init = true;
+
+    initThread();
 }
 
 void Network::end()
@@ -77,11 +88,11 @@ bool Network::initThread()
     if(pthread_create(&thread, NULL, Network::threadLoop, (void*)NULL) != 0) {
         thread_should_run = false;
 
-        printf("Could not create network thread\n");
+        Logger::log("Could not create network thread");
         return false;
     }
 
-    printf("Thread created\n");
+    Logger::log("Thread created");
 
     return true;
 }
@@ -93,7 +104,7 @@ void Network::closeThread()
 
     while(thread_running) { usleep(USLEEP_TIME); }
 
-    printf("Closed thread\n");
+    Logger::log("Closed thread");
 }
 
 void *Network::threadLoop(void *args)
@@ -106,12 +117,23 @@ void *Network::threadLoop(void *args)
 
 	thread_running = true;
 
+	ms_t lastCubeTime = 0;
+
 	while(thread_should_run)
 	{
-		ssize_t r = receivePacket(buf, RECEIVE_LEN, &ip, &port);
+		ssize_t r = receivePacket(buf, RECEIVE_LEN, &ip, &port, false);
 
-	    if(port == PI_PORT && r == (send_sig_len + 8) && strncmp((char*)buf, SEND_SIG, send_sig_len) == 0) {
+		 ms_t time = Timer::getMs();
+
+	    if(r != -1 && port == PI_PORT && r == (send_sig_len + 8) && strncmp((char*)buf, SEND_SIG, send_sig_len) == 0) {
 	    	unpack(buf + send_sig_len, "dd", &camera_x, &camera_y);
+	    	//Logger::log("Camera data received: %f %f", camera_x, camera_y);
+	    	sees_cube = (camera_x < DOESNT_SEE_CUBE && camera_y < DOESNT_SEE_CUBE);
+	    	lastCubeTime = time;
+	    }
+
+	    if((time - lastCubeTime) > SEE_CUBE_TIMEOUT) {
+	    	sees_cube = false;
 	    }
 	}
 
@@ -133,7 +155,7 @@ ssize_t Network::receivePacket(unsigned char *buf, size_t buf_len, ip_t *ip, uns
     ssize_t recvlen = recvfrom(n_fd, buf, len, 0, (struct sockaddr*)&remote_addr, &addr_len);
 
     if(recvlen == 0) {
-        printf("Peer has performed orderly shutdown\n");
+        Logger::log("Peer has performed orderly shutdown");
         return 0;
     }
     else if(recvlen != -1) {
