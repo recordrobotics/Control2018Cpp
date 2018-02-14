@@ -25,5 +25,7 @@ public:
 	~Drivetrain();
 	void InitDefaultCommand() override;
 	void drive(double left, double right);
+	void stop();
+	void driveCheesy(double throttle, double turn, double sensitivity);
 };
 
