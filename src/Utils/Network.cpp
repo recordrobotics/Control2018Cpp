@@ -104,15 +104,20 @@ void *Network::threadLoop(void *args)
 
 	unsigned char buf[RECEIVE_LEN];
 
+	thread_running = true;
+
 	while(thread_should_run)
 	{
-		ssize_t r = receivePacket(buf, RECEIVE_LEN, &ip, &port, true);
+		ssize_t r = receivePacket(buf, RECEIVE_LEN, &ip, &port);
 
 	    if(port == PI_PORT && r == (send_sig_len + 8) && strncmp((char*)buf, SEND_SIG, send_sig_len) == 0) {
 	    	unpack(buf + send_sig_len, "dd", &camera_x, &camera_y);
 	    }
-
 	}
+
+	thread_running = false;
+
+	return NULL;
 }
 
 ssize_t Network::receivePacket(unsigned char *buf, size_t buf_len, ip_t *ip, unsigned short *port, bool nullTerminate=false)

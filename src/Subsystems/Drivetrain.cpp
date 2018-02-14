@@ -5,16 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "ExampleSubsystem.h"
-
+#include "Drivetrain.h"
 #include "../RobotMap.h"
+#include "../Commands/DrivewithJoystick.h"
 
-ExampleSubsystem::ExampleSubsystem()
-    : frc::Subsystem("ExampleSubsystem") {}
+Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
+		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
+		default_command()
+{
 
-void ExampleSubsystem::InitDefaultCommand() {
+}
+
+Drivetrain::~Drivetrain() {
+}
+
+void Drivetrain::drive(double left, double right) {
+	left_motor1.Set(left);
+	left_motor2.Set(left);
+	right_motor1.Set(right);
+	right_motor2.Set(right);
+}
+
+void Drivetrain::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
-	// SetDefaultCommand(new MySpecialCommand());
+	SetDefaultCommand(&default_command);
 }
 
 // Put methods for controlling this subsystem

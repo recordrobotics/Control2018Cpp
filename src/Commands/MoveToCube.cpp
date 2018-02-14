@@ -5,27 +5,50 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "MyAutoCommand.h"
+#include "MoveToCube.h"
 
-MyAutoCommand::MyAutoCommand() {
+#include "../Robot.h"
+
+#include "Utils/Network.h"
+
+MoveToCube::MoveToCube() {
 	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(&Robot::chassis);
+	Requires(&Robot::drivetrain);
 }
 
 // Called just before this Command runs the first time
-void MyAutoCommand::Initialize() {}
+void MoveToCube::Initialize() {
+
+}
 
 // Called repeatedly when this Command is scheduled to run
-void MyAutoCommand::Execute() {}
+void MoveToCube::Execute() {
+	double x = Network::getCameraX();
+
+	double sens = 0.3;
+	double max = 0.2;
+	double v = x * sens;
+
+	if(v > max)
+		v = max;
+	else if(v < -max)
+		v = -max;
+
+	Robot::drivetrain.drive(v, -v);
+}
 
 // Make this return true when this Command no longer needs to run execute()
-bool MyAutoCommand::IsFinished() {
+bool MoveToCube::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void MyAutoCommand::End() {}
+void MoveToCube::End() {
+
+}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MyAutoCommand::Interrupted() {}
+void MoveToCube::Interrupted() {
+
+}

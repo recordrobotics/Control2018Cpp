@@ -9,12 +9,13 @@
 
 #include <Commands/Command.h>
 
-class ExampleCommand : public frc::Command {
+class MoveToCube : public frc::Command {
 public:
-	ExampleCommand();
+	MoveToCube();
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
 };
+
