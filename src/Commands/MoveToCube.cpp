@@ -34,23 +34,29 @@ void MoveToCube::Execute() {
 
 	double x = Network::getCameraX();
 
-	double sens = 1.0;
-	double d_sens = 1.0;
-	double max = 0.3;
-	double v = 0.0;
-	double e = 0.001;
+	double forward = 0.2;
+	double sens = 0.4;
+	double d_sens = 1.8;
+	double max = 0.17;
 
-	if(x > e || x < -e)
-		v = x * sens + d_sens * Robot::drivetrain.getLeft() * x / fabs(x);
+	double v1 = x * sens;
+	double v2 = d_sens * Robot::drivetrain.getLeft() * fabs(x);
+	double vb = v1 + v2;
 
-	if(v > max)
-		v = max;
-	else if(v < -max)
-		v = -max;
+	if(v1 > 0.0 && vb < 0.0)
+		vb = 0.0;
+	else if(v1 < 0.0 && vb > 0.0)
+		vb = 0.0;
 
-	Logger::log("v1: %f, v2: %f", x * sens, d_sens * Robot::drivetrain.getLeft() * x / fabs(x));
 
-	Robot::drivetrain.drive(-v, v);
+	if(vb > max)
+		vb = max;
+	else if(vb < -max)
+		vb = -max;
+
+	Logger::log("v1: %f, v2: %f", v1, v2);
+
+	Robot::drivetrain.drive(-forward - vb, -forward + vb);
 }
 
 // Make this return true when this Command no longer needs to run execute()

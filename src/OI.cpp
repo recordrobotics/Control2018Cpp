@@ -8,6 +8,7 @@
 #include "OI.h"
 
 #include <WPILib.h>
+#include <Joystick.h>
 
 OI::OI() {
 	// Process operator interface input here.
