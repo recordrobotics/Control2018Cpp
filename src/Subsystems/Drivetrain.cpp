@@ -13,7 +13,7 @@
 
 Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
 		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
-		default_command(), m_left(0.0), m_right(0.0)
+		m_left(0.0), m_right(0.0), default_command()
 {
 
 }
@@ -25,7 +25,7 @@ void Drivetrain::drive(double left, double right) {
 	m_left = left;
 	m_right = right;
 
-	Logger::log("motors: %f %f", m_left, m_right);
+	//Logger::log("motors: %f %f", m_left, m_right);
 
 	left_motor1.Set(-m_left);
 	left_motor2.Set(-m_left);
@@ -40,7 +40,7 @@ void Drivetrain::stop() {
 	right_motor2.Set(0);
 }
 
-void DriveTrain::driveCheesy(double throttle, double turn, double sensitivity)
+void Drivetrain::driveCheesy(double throttle, double turn, double sensitivity)
 {
 	double left, right;
 

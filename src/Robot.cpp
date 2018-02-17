@@ -19,6 +19,8 @@
 
 Drivetrain Robot::drivetrain;
 OI Robot::oi;
+Climber Robot::climber;
+Grabber Robot::grabber;
 
 Robot::Robot() : m_period(0.01)
 {

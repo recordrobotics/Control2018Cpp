@@ -5,44 +5,47 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "DrivewithJoystick.h"
-
+#include "ClimberCommand.h"
 #include "../Robot.h"
-#include "../Utils/Logger.h"
 #include "../RobotMap.h"
 
-#include <Joystick.h>
-
-DrivewithJoystick::DrivewithJoystick() {
+ClimberCommand::ClimberCommand() {
 	// Use Requires() here to declare subsystem dependencies
-	Requires(&Robot::drivetrain);
+	Requires(&Robot::climber);
 }
 
 // Called just before this Command runs the first time
-void DrivewithJoystick::Initialize() {
-	Robot::drivetrain.stop();
+void ClimberCommand::Initialize() {
+	Robot::climber.stopMotor();
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DrivewithJoystick::Execute() {
-	double left = Robot::oi.getLeftJoystick().GetRawAxis(forward_axis);
-	double right = Robot::oi.getRightJoystick().GetRawAxis(forward_axis);
-	Robot::drivetrain.drive(left, right);
-	//Logger::log(){printf("%f %f\n", forward, turn);};
+void ClimberCommand::Execute() {
+	bool butt = Robot::oi.getLeftJoystick().GetRawButton(climberbuttonPort);
+	bool butt_v2 = Robot::oi.getRightJoystick().GetRawButton(climberbuttonPort);
+
+	double move = climberMoveSpeed * (double)((int)butt - (int)butt_v2);
+
+	if(move < 0.0 && !Robot::climber.getBottomSwitch())
+		move = 0.0;
+	if(move > 0.0 && !Robot::climber.getTopSwitch())
+		move = 0.0;
+
+	Robot::climber.setMotor(move);
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DrivewithJoystick::IsFinished() {
+bool ClimberCommand::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void DrivewithJoystick::End() {
-	Robot::drivetrain.stop();
+void ClimberCommand::End() {
+	Robot::climber.stopMotor();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void DrivewithJoystick::Interrupted() {
-	Robot::drivetrain.stop();
+void ClimberCommand::Interrupted() {
+	Robot::climber.stopMotor();
 }

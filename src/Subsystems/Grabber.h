@@ -1,6 +1,9 @@
 #pragma once
 
-class Grabber : frc::Subsystem
+#include <Spark.h>
+#include <Commands/Subsystem.h>
+
+class Grabber : public frc::Subsystem
 {
 private:
 	// It's desirable that everything possible under private except
@@ -10,9 +13,10 @@ private:
 
 public:
 	Grabber();
-	~Grabber();
 
 	void succ(double speed);
-	void adjust(double speed);
+	void adjust(double speed, bool direction);
 
+	void set(double left, double right);
+	void stop();
 };

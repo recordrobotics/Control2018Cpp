@@ -7,29 +7,31 @@
 
 #pragma once
 
-#include <Spark.h>
 #include <Commands/Subsystem.h>
-#include "../Commands/DrivewithJoystick.h"
+#include <Spark.h>
+#include <VictorSP.h>
+#include <DigitalInput.h>
+#include "../Commands/ClimberCommand.h"
 
-class Drivetrain : public frc::Subsystem {
+class Climber : public frc::Subsystem {
 private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 
-	frc::Spark left_motor1, left_motor2, right_motor1, right_motor2;
+	DigitalInput bottom_switch, top_switch;
 
-	double m_left, m_right;
+	frc::VictorSP motor;
 
-	DrivewithJoystick default_command;
+	ClimberCommand default_command;
 
 public:
-	Drivetrain();
-	~Drivetrain();
+	Climber();
 	void InitDefaultCommand() override;
-	void drive(double left, double right);
-	void stop();
-	void driveCheesy(double throttle, double turn, double sensitivity);
-	inline double getLeft() { return m_left; }
-	inline double getRight() { return m_right; }
+
+	bool getBottomSwitch() const { return bottom_switch.Get(); }
+	bool getTopSwitch() const { return top_switch.Get(); }
+
+	void setMotor(double v) { motor.Set(v); }
+	void stopMotor() { motor.Set(0.0); }
 };
 

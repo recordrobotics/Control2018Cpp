@@ -5,13 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "OI.h"
+#include "Climber.h"
+#include "../RobotMap.h"
 
-#include <WPILib.h>
-#include <Joystick.h>
+#include "../RobotMap.h"
 
-#include "RobotMap.h"
-
-OI::OI() : left_joystick(leftjoystickPort), right_joystick(rightjoystickPort) {
-	// Process operator interface input here.
+Climber::Climber() : Subsystem("Climber"), bottom_switch(bottomswitchPort),
+					 top_switch(topswitchPort), motor(climbmotorPort), default_command()
+{
 }
+
+void Climber::InitDefaultCommand() {
+	// Set the default command for a subsystem here.
+	SetDefaultCommand(&default_command);
+}
+
+// Put methods for controlling this subsystem
+// here. Call these from Commands.

@@ -1,18 +1,37 @@
+#include "Grabber.h"
 
-void Grabber::succ(double speed){
-	left_motor.Set(speed);
-	right_motor.Set(-speed);
+#include "../RobotMap.h"
+
+Grabber::Grabber() : Subsystem("Grabber"), left_motor(leftgrabberPort), right_motor(rightgrabberPort)
+{
+
 }
 
-void Grabber::adjust(double speed, bool direction){
+void Grabber::succ(double speed)
+{
+	set(speed, -speed);
+}
+
+void Grabber::adjust(double speed, bool direction)
+{
 	if (direction)
 	{
-		left_motor.Set(speed);
-		right_motor.Set(speed);
+		set(speed, speed);
 	}
 	else
 	{
-		left_motor.Set(-speed);
-		right_motor.Set(-speed);
+		set(-speed, -speed);
 	}
+}
+
+void Grabber::set(double left, double right)
+{
+	left_motor.Set(left);
+	right_motor.Set(right);
+}
+
+void Grabber::stop()
+{
+	left_motor.Set(0.0);
+	right_motor.Set(0.0);
 }

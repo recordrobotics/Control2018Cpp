@@ -28,7 +28,17 @@ constexpr int leftmotor1Port = 0;
 constexpr int leftmotor2Port = 1;
 constexpr int rightmotor1Port = 2;
 constexpr int rightmotor2Port = 3;
+constexpr int climbmotorPort = 4;
+constexpr int leftgrabberPort = 5;
+constexpr int rightgrabberPort = 6;
+
+constexpr int leftjoystickPort = 0;
+constexpr int rightjoystickPort = 1;
+constexpr int bottomswitchPort = 0;
+constexpr int topswitchPort = 1;
+constexpr int climberbuttonPort = 0;
 
 constexpr int forward_axis = 0;
-constexpr int turn_axis = 1;
+constexpr int grabber_axis = 2;
 
+constexpr double climberMoveSpeed = 0.5;

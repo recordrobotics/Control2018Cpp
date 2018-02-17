@@ -5,13 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "OI.h"
+#pragma once
 
-#include <WPILib.h>
-#include <Joystick.h>
+#include <Commands/Command.h>
 
-#include "RobotMap.h"
+class GrabberCommand : public frc::Command {
+public:
+	GrabberCommand();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
+};
 
-OI::OI() : left_joystick(leftjoystickPort), right_joystick(rightjoystickPort) {
-	// Process operator interface input here.
-}

@@ -7,12 +7,16 @@
 
 #pragma once
 
+#include <Joystick.h>
+
 class OI {
 public:
 	OI();
-	static const frc::Joystick& getJoystick() const { return joystick; };
+	inline const frc::Joystick& getLeftJoystick() const { return left_joystick; };
+	inline const frc::Joystick& getRightJoystick() const { return right_joystick; }
 private:
-	static frc::Joystick joystick;
+	frc::Joystick left_joystick;
+	frc::Joystick right_joystick;
 };
 
 

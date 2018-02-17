@@ -5,44 +5,41 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "DrivewithJoystick.h"
+#include "GrabberCommand.h"
 
 #include "../Robot.h"
-#include "../Utils/Logger.h"
+
 #include "../RobotMap.h"
 
-#include <Joystick.h>
-
-DrivewithJoystick::DrivewithJoystick() {
+GrabberCommand::GrabberCommand() {
 	// Use Requires() here to declare subsystem dependencies
-	Requires(&Robot::drivetrain);
+	Requires(&Robot::grabber);
 }
 
 // Called just before this Command runs the first time
-void DrivewithJoystick::Initialize() {
-	Robot::drivetrain.stop();
+void GrabberCommand::Initialize() {
+	Robot::grabber.stop();
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DrivewithJoystick::Execute() {
-	double left = Robot::oi.getLeftJoystick().GetRawAxis(forward_axis);
-	double right = Robot::oi.getRightJoystick().GetRawAxis(forward_axis);
-	Robot::drivetrain.drive(left, right);
-	//Logger::log(){printf("%f %f\n", forward, turn);};
+void GrabberCommand::Execute() {
+	double left = Robot::oi.getLeftJoystick().GetRawAxis(grabber_axis);
+	double right = Robot::oi.getRightJoystick().GetRawAxis(grabber_axis);
+	Robot::grabber.set(left, right);
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DrivewithJoystick::IsFinished() {
+bool GrabberCommand::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void DrivewithJoystick::End() {
-	Robot::drivetrain.stop();
+void GrabberCommand::End() {
+	Robot::grabber.stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void DrivewithJoystick::Interrupted() {
-	Robot::drivetrain.stop();
+void GrabberCommand::Interrupted() {
+	Robot::grabber.stop();
 }

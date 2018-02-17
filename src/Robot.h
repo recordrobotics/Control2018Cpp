@@ -5,10 +5,14 @@
 #include <TimedRobot.h>
 #include <Commands/Command.h>
 #include "Commands/MoveToCube.h"
+#include "Subsystems/Climber.h"
+#include "Subsystems/Grabber.h"
 
 class Robot : public frc::TimedRobot {
 public:
 	static Drivetrain drivetrain;
+	static Climber climber;
+	static Grabber grabber;
 	static OI oi;
 
 	Robot();
