@@ -10,4 +10,9 @@
 class OI {
 public:
 	OI();
+	static const frc::Joystick& getJoystick() const { return joystick; };
+private:
+	static frc::Joystick joystick;
 };
+
+

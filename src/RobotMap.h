@@ -28,3 +28,7 @@ constexpr int leftmotor1Port = 0;
 constexpr int leftmotor2Port = 1;
 constexpr int rightmotor1Port = 2;
 constexpr int rightmotor2Port = 3;
+
+constexpr int forward_axis = 0;
+constexpr int turn_axis = 1;
+

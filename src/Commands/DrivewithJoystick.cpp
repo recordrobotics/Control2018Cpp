@@ -8,6 +8,7 @@
 #include "DrivewithJoystick.h"
 
 #include "../Robot.h"
+#include "../Utils/Logger.h"
 
 DrivewithJoystick::DrivewithJoystick() {
 	// Use Requires() here to declare subsystem dependencies
@@ -21,7 +22,11 @@ void DrivewithJoystick::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DrivewithJoystick::Execute() {
-
+	frc::Joystick = OI::getJoystick();
+	double forward = j.getRawAxis(forward_axis);
+	double turn = j.getRawAxis(turn_axis);
+	Robot::drivetrain.driveCheesy(forward, turn);
+	Logger::log(){printf("%f %f\n", forward, turn);};
 }
 
 // Make this return true when this Command no longer needs to run execute()
