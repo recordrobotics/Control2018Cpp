@@ -33,6 +33,27 @@ void Drivetrain::drive(double left, double right) {
 	right_motor2.Set(m_right);
 }
 
+void Drivetrain::stop() {
+	left_motor1.Set(0);
+	left_motor2.Set(0);
+	right_motor1.Set(0);
+	right_motor2.Set(0);
+}
+
+void DriveTrain::driveCheesy(double throttle, double turn, double sensitivity)
+{
+	double left, right;
+
+	throttle = throttle * sensitivity;
+	turn = turn * sensitivity;
+	
+	left = throttle-turn;
+	right = throttle+turn;
+
+	drive(left, right);
+}
+
+
 void Drivetrain::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
 	SetDefaultCommand(&default_command);
