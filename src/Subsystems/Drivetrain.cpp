@@ -13,9 +13,13 @@
 
 Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
 		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
-		m_left(0.0), m_right(0.0), default_command()
+		m_left(0.0), m_right(0.0), default_command(), leftEncoder(leftEncoderPort1, leftEncoderPort2),
+	 	rightEncoder(rightEncoderPort1, rightEncoderPort2), gyro(frc::SPI::Port::kOnboardCS0),
+		leftEncoderPID(&leftEncoder), rightEncoderPID(&rightEncoder), leftPIDOutput(&left_motor1, &left_motor2, true),
+		rightPIDOutput(&right_motor1, &right_motor2, false)
 {
-
+	leftEncoder.SetDistancePerPulse(0.01);
+	rightEncoder.SetDistancePerPulse(0.01);
 }
 
 Drivetrain::~Drivetrain() {

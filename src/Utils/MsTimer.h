@@ -5,14 +5,14 @@
  *      Author: vassy
  */
 
-#ifndef SRC_UTILS_TIMER_H_
-#define SRC_UTILS_TIMER_H_
+#ifndef SRC_UTILS_MSTIMER_H_
+#define SRC_UTILS_MSTIMER_H_
 
 #include <chrono>
 
 typedef unsigned long long int ms_t;
 
-class Timer {
+class MsTimer {
 public:
     static void init()
     {
@@ -27,9 +27,9 @@ public:
     }
 
 private:
-    Timer() { }
+    MsTimer() { }
 
     static std::chrono::time_point<std::chrono::steady_clock> start;
 };
 
-#endif /* SRC_UTILS_TIMER_H_ */
+#endif /* SRC_UTILS_MSTIMER_H_ */

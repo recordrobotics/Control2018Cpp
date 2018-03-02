@@ -10,6 +10,7 @@
 #include "../Robot.h"
 #include "../Utils/Logger.h"
 #include "../RobotMap.h"
+#include "../Utils/Logger.h"
 
 #include <Joystick.h>
 
@@ -23,12 +24,35 @@ void DrivewithJoystick::Initialize() {
 	Robot::drivetrain.stop();
 }
 
+double DrivewithJoystick::smooth(double x) {
+	return (x * x * x);
+}
+
 // Called repeatedly when this Command is scheduled to run
 void DrivewithJoystick::Execute() {
-	double left = Robot::oi.getLeftJoystick().GetRawAxis(forward_axis);
-	double right = Robot::oi.getRightJoystick().GetRawAxis(forward_axis);
-	Robot::drivetrain.drive(left, right);
-	//Logger::log(){printf("%f %f\n", forward, turn);};
+	/*double left = Robot::oi.getLeftJoystick().GetY();
+	double right = Robot::oi.getRightJoystick().GetY();
+
+	left = smooth(left);
+	right = smooth(right);
+
+	if(left < 0.0 && right > 0.0) {
+		left = -(-left + right) * 0.5;
+		right = (-left + right) * 0.5;
+	}
+	else if(left > 0.0 && right < 0.0) {
+		left = (left - right) * 0.5;
+		right = -(left - right) * 0.5;
+	}*/
+
+	double forward = 0.5 * (Robot::oi.getLeftJoystick().GetY() + Robot::oi.getRightJoystick().GetY());
+	double turn = 0.5 * (Robot::oi.getLeftJoystick().GetZ() + Robot::oi.getRightJoystick().GetZ());
+
+	forward = smooth(forward);
+	turn = smooth(turn);
+
+	Robot::drivetrain.driveCheesy(forward, turn, 1.0);
+	//Logger::log("driving: %f %f", left, right);
 }
 
 // Make this return true when this Command no longer needs to run execute()

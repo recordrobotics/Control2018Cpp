@@ -17,15 +17,14 @@ public:
 
 	Robot();
 
-	inline double getPeriod() const { return m_period; }
-
 private:
+	double m_period;
+
 	MoveToCube m_moveToCubeCommand;
 	Command *m_autonomousCommand;
 
-	double m_period;
-
 	void RobotInit() override;
+	void RobotPeriodic() override;
 	void AutonomousInit() override;
 	void AutonomousPeriodic() override;
 	void TeleopInit() override;

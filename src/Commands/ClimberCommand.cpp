@@ -9,6 +9,8 @@
 #include "../Robot.h"
 #include "../RobotMap.h"
 
+#include "../Utils/Logger.h"
+
 ClimberCommand::ClimberCommand() {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(&Robot::climber);
@@ -21,15 +23,18 @@ void ClimberCommand::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ClimberCommand::Execute() {
-	bool butt = Robot::oi.getLeftJoystick().GetRawButton(climberbuttonPort);
-	bool butt_v2 = Robot::oi.getRightJoystick().GetRawButton(climberbuttonPort);
+	bool butt = Robot::oi.getRightJoystick().GetRawButton(climberbuttonPort);
+	bool butt_v2 = Robot::oi.getLeftJoystick().GetRawButton(climberbuttonPort);
 
+	double climberMoveSpeed = 0.5;
 	double move = climberMoveSpeed * (double)((int)butt - (int)butt_v2);
 
 	if(move < 0.0 && !Robot::climber.getBottomSwitch())
 		move = 0.0;
 	if(move > 0.0 && !Robot::climber.getTopSwitch())
 		move = 0.0;
+
+	//Logger::log("Climb: %f  bottom switch: %d  top switch: %d", move, Robot::climber.getBottomSwitch(), Robot::climber.getTopSwitch());
 
 	Robot::climber.setMotor(move);
 }

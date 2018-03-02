@@ -7,33 +7,19 @@
 
 #pragma once
 
-#include <Commands/Command.h>
+#include <Commands/CommandGroup.h>
 
-#include <Utils/MsTimer.h>
+#include "MoveGrabber.h"
+#include "SmoothMove.h"
+#include "SetGrabber.h"
 
-enum E_AUTO_STATE {
-	EAS_MOVE = 0,
-	EAS_PREGRAB,
-	EAS_GRAB,
-	EAS_IDLE,
-	EAS_COUNT
-};
-
-#define PREGRAB_MOVE_TIME  800
-
-class MoveToCube : public frc::Command {
+class LeftStartLeftSwitch : public frc::CommandGroup {
 public:
-	MoveToCube();
-	void Initialize() override;
-	void Execute() override;
-	bool IsFinished() override;
-	void End() override;
-	void Interrupted() override;
-
+	LeftStartLeftSwitch();
 private:
-	E_AUTO_STATE state;
-	ms_t lastStateChangeTime;
-
-	void setState(E_AUTO_STATE s);
+	SetGrabber m_openGrabber;
+	SetGrabber m_closeGrabber;
+	MoveGrabber m_moveGrabberUp;
+	SmoothMove m_smoothMove;
 };
 

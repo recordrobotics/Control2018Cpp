@@ -16,7 +16,7 @@ public:
 	inline const frc::Joystick& getRightJoystick() const { return right_joystick; }
 private:
 	frc::Joystick left_joystick;
-	frc::Joystick right_joystick;
+	 frc::Joystick right_joystick;
 };
 
 

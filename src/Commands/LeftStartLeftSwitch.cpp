@@ -5,35 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#pragma once
+#include "LeftStartLeftSwitch.h"
 
-#include <Commands/Command.h>
-
-#include <Utils/MsTimer.h>
-
-enum E_AUTO_STATE {
-	EAS_MOVE = 0,
-	EAS_PREGRAB,
-	EAS_GRAB,
-	EAS_IDLE,
-	EAS_COUNT
-};
-
-#define PREGRAB_MOVE_TIME  800
-
-class MoveToCube : public frc::Command {
-public:
-	MoveToCube();
-	void Initialize() override;
-	void Execute() override;
-	bool IsFinished() override;
-	void End() override;
-	void Interrupted() override;
-
-private:
-	E_AUTO_STATE state;
-	ms_t lastStateChangeTime;
-
-	void setState(E_AUTO_STATE s);
-};
-
+LeftStartLeftSwitch::LeftStartLeftSwitch() : m_openGrabber(true), m_closeGrabber(false), m_moveGrabberUp(0.7, true),
+											 m_smoothMove("leftstartleftswitch.txt", "/log/constants.txt", 0.01, 5.0, 10.0, 20.0)
+{
+	AddParallel(&m_openGrabber);
+	AddSequential(&m_smoothMove);
+	AddSequential(&m_closeGrabber);
+	AddSequential(&m_moveGrabberUp);
+}

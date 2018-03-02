@@ -17,5 +17,8 @@ public:
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
+
+private:
+	double smooth(double x);
 };
 

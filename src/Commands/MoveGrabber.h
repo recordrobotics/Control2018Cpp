@@ -9,21 +9,9 @@
 
 #include <Commands/Command.h>
 
-#include <Utils/MsTimer.h>
-
-enum E_AUTO_STATE {
-	EAS_MOVE = 0,
-	EAS_PREGRAB,
-	EAS_GRAB,
-	EAS_IDLE,
-	EAS_COUNT
-};
-
-#define PREGRAB_MOVE_TIME  800
-
-class MoveToCube : public frc::Command {
+class MoveGrabber : public frc::Command {
 public:
-	MoveToCube();
+	MoveGrabber(double v, bool dir);
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
@@ -31,9 +19,7 @@ public:
 	void Interrupted() override;
 
 private:
-	E_AUTO_STATE state;
-	ms_t lastStateChangeTime;
-
-	void setState(E_AUTO_STATE s);
+	double m_vel;
+	bool m_dir;
 };
 

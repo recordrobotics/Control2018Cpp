@@ -17,5 +17,8 @@ public:
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
+
+private:
+	bool last_push_toggle, last_grab_toggle;
 };
 
