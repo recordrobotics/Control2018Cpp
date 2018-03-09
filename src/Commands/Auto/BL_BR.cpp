@@ -5,21 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Climber.h"
-#include "../RobotMap.h"
+#include "BL_BR.h"
 
-#include "../RobotMap.h"
+#define ANGLE  30.0
 
-Climber::Climber() : Subsystem("Climber"), bottom_switch(bottomswitchPort),
-					 top_switch(topswitchPort), motor(climbmotorPort), default_command()
+BL_BR::BL_BR(bool left) : m_closeGrabber(false), m_turnAngle(left ? -ANGLE : ANGLE, ETA_FORWARD),
+						  m_moveToTape(EVT_TAPE), m_moveGrabberUp(true), m_openGrabber(true)
 {
-	stopMotor();
+	AddSequential(m_closeGrabber);
+	AddSequential(m_turnAngle);
+	AddParallel(m_moveToTape);
+	AddSequential(m_moveGrabberUp);
+	AddSequential(m_openGrabber);
 }
-
-void Climber::InitDefaultCommand() {
-	// Set the default command for a subsystem here.
-	SetDefaultCommand(&default_command);
-}
-
-// Put methods for controlling this subsystem
-// here. Call these from Commands.

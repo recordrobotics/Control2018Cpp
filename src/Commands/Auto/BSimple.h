@@ -9,17 +9,15 @@
 
 #include <Commands/CommandGroup.h>
 
-#include "MoveGrabber.h"
-#include "SmoothMove.h"
-#include "SetGrabber.h"
+#include "../TurnAngle.h"
+#include "../MoveDistance.h"
 
-class LeftStartLeftSwitch : public frc::CommandGroup {
+class BSimple : public frc::CommandGroup {
 public:
-	LeftStartLeftSwitch();
+	BSimple();
+
 private:
-	SetGrabber m_openGrabber;
-	SetGrabber m_closeGrabber;
-	MoveGrabber m_moveGrabberUp;
-	SmoothMove m_smoothMove;
+	TurnAngle m_turnAngle;
+	MoveDistance m_moveDistance;
 };
 

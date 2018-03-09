@@ -6,15 +6,15 @@
 /*----------------------------------------------------------------------------*/
 
 #include <Commands/Command.h>
+#include <Commands/MoveToTarget.h>
 #include <Commands/Scheduler.h>
 #include <TimedRobot.h>
 #include <Utils/MsTimer.h>
+#include <DriverStation.h>
 
 #include "Robot.h"
 
 #include "RobotMap.h"
-
-#include "Commands/MoveToCube.h"
 
 #include "Utils/Network.h"
 #include "Utils/Logger.h"
@@ -24,9 +24,14 @@ OI Robot::oi;
 Climber Robot::climber;
 Grabber Robot::grabber;
 
-Robot::Robot() : m_period(0.01), m_moveToCubeCommand(), m_autonomousCommand(nullptr)
+Robot::Robot() : m_period(0.01), m_moveToCubeCommand(), m_autonomousCommand()
 {
 	SetPeriod(m_period);
+}
+
+void Robot::getGameMessage()
+{
+	gameMes = frc::DriverStation::GetInstance().GetGameSpecificMessage();
 }
 
 void Robot::RobotInit() {
@@ -35,20 +40,31 @@ void Robot::RobotInit() {
 	Network::init();
 	Logger::log("Begin!");
 
-	m_autonomousCommand = &m_moveToCubeCommand;
+	m_autonomousCommand = &m_BSimpleCommand;
+	chooser.AddDefault("BSimple", &m_BSimpleCommand);
+	/*chooser.AddDefault("BSimple", m_BSimpleCommand);
+	chooser.AddObject("BL_BR", m_BL_BRCommand);
+	chooser.AddObject("CL_AR", m_CL_ARCommand);
+	chooser.AddObject("ACSimple", m_A_CSimpleCommand);*/
 }
 
 void Robot::RobotPeriodic() {
 	//rangeFinder.update();
+	//Logger::log("Angle: %f", drivetrain.getAngle());
+	Logger::log("Encoders: %f, %f", drivetrain.getLeftRate(), drivetrain.getRightRate());
 }
 
 void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
+
+	getGameMessage();
 }
 
 void Robot::AutonomousInit() {
+	getGameMessage();
+
 	if (m_autonomousCommand != nullptr) {
 		m_autonomousCommand->Start();
 	}

@@ -21,7 +21,7 @@ private:
 
 	GrabberCommand default_command;
 
-	RangeFinder rangeFinder;
+	//RangeFinder rangeFinder;
 
 public:
 	Grabber();
@@ -38,7 +38,7 @@ public:
 	void set(double left, double right);
 	void stop();
 
-	inline double getFinderDistance() const { return rangeFinder.getDistance(); }
+	//inline double getFinderDistance() const { return rangeFinder.getDistance(); }
 
 	void InitDefaultCommand() override;
 };

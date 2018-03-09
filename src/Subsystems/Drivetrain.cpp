@@ -11,15 +11,19 @@
 
 #include "../Utils/Logger.h"
 
+#define ENCODER_DISTANCE  (5.224 * 0.1524 * 3.141592 / 1440.0)
+
 Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
 		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
 		m_left(0.0), m_right(0.0), default_command(), leftEncoder(leftEncoderPort1, leftEncoderPort2),
-	 	rightEncoder(rightEncoderPort1, rightEncoderPort2), gyro(frc::SPI::Port::kOnboardCS0),
-		leftEncoderPID(&leftEncoder), rightEncoderPID(&rightEncoder), leftPIDOutput(&left_motor1, &left_motor2, true),
-		rightPIDOutput(&right_motor1, &right_motor2, false)
+	 	rightEncoder(rightEncoderPort1, rightEncoderPort2, true), leftEncoderPID(&leftEncoder), rightEncoderPID(&rightEncoder),
+		gyro(frc::SPI::Port::kOnboardCS0), leftPIDOutput(&left_motor1, &left_motor2, true),
+		rightPIDOutput(&right_motor1, &right_motor2, false), lights(lightsPort, frc::Relay::Direction::kForwardOnly)
 {
-	leftEncoder.SetDistancePerPulse(0.01);
-	rightEncoder.SetDistancePerPulse(0.01);
+	leftEncoder.SetDistancePerPulse(ENCODER_DISTANCE);
+	rightEncoder.SetDistancePerPulse(ENCODER_DISTANCE);
+	stop();
+	setLights(false);
 }
 
 Drivetrain::~Drivetrain() {
@@ -57,6 +61,13 @@ void Drivetrain::driveCheesy(double throttle, double turn, double sensitivity)
 	drive(left, right);
 }
 
+void Drivetrain::setLights(bool s)
+{
+	if(s)
+		lights.Set(frc::Relay::Value::kOn);
+	else
+		lights.Set(frc::Relay::Value::kOff);
+}
 
 void Drivetrain::InitDefaultCommand() {
 	// Set the default command for a subsystem here.

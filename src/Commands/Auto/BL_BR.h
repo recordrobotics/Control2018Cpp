@@ -5,21 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Climber.h"
-#include "../RobotMap.h"
+#pragma once
 
-#include "../RobotMap.h"
+#include <Commands/CommandGroup.h>
 
-Climber::Climber() : Subsystem("Climber"), bottom_switch(bottomswitchPort),
-					 top_switch(topswitchPort), motor(climbmotorPort), default_command()
-{
-	stopMotor();
-}
+#include "../SetGrabber.h"
+#include "../TurnAngle.h"
+#include "../MoveToTarget.h"
+#include "../MoveGrabber.h"
 
-void Climber::InitDefaultCommand() {
-	// Set the default command for a subsystem here.
-	SetDefaultCommand(&default_command);
-}
+class BL_BR : public frc::CommandGroup {
+public:
+	BL_BR(bool left);
 
-// Put methods for controlling this subsystem
-// here. Call these from Commands.
+private:
+	SetGrabber m_closeGrabber;
+	TurnAngle m_turnAngle;
+	MoveToTarget m_moveToTape;
+	MoveGrabber m_moveGrabberUp;
+	SetGrabber m_openGrabber;
+};
+

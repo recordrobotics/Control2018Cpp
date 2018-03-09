@@ -28,8 +28,8 @@ double Network::right_camera_x = 0.0;
 double Network::right_camera_y = 0.0;
 double Network::left_camera_x = 0.0;
 double Network::left_camera_y = 0.0;
-bool Network::left_sees_cube = false;
-bool Network::right_sees_cube = false;
+bool Network::left_sees_target = false;
+bool Network::right_sees_target = false;
 ip_t Network::left_pi_ip = 0;
 ip_t Network::right_pi_ip = 0;
 
@@ -40,10 +40,10 @@ void Network::init()
     thread_should_run = false;
     right_camera_x = 0.0;
     right_camera_y = 0.0;
-    right_sees_cube = false;
+    right_sees_target = false;
     left_camera_x = 0.0;
     left_camera_y = 0.0;
-    left_sees_cube = false;
+    left_sees_target = false;
     left_pi_ip = 0;
     right_pi_ip = 0;
     n_fd = 0;
@@ -127,7 +127,7 @@ void *Network::threadLoop(void *args)
 
 	thread_running = true;
 
-	ms_t lastLeftCubeTime = 0, lastRightCubeTime = 0;
+	ms_t lastLeftTargetTime = 0, lastRightTargetTime = 0;
 
 	while(thread_should_run)
 	{
@@ -147,8 +147,8 @@ void *Network::threadLoop(void *args)
 	    	if(buf[send_sig_len] == 'R') {
 	    		right_pi_ip = ip;
 
-	    		right_sees_cube = (x < DOESNT_SEE_CUBE && y < DOESNT_SEE_CUBE);
-	    		lastRightCubeTime = time;
+	    		right_sees_target = (x < DOESNT_SEE_TARGET && y < DOESNT_SEE_TARGET);
+	    		lastRightTargetTime = time;
 
 	    		if(right_sees_cube) {
 	    			right_camera_x = x;
@@ -158,8 +158,8 @@ void *Network::threadLoop(void *args)
 	    	else if(buf[send_sig_len] == 'L') {
 	    		left_pi_ip = ip;
 
-	    		left_sees_cube = (x < DOESNT_SEE_CUBE && y < DOESNT_SEE_CUBE);
-	    		lastLeftCubeTime = time;
+	    		left_sees_target = (x < DOESNT_SEE_TARGET && y < DOESNT_SEE_TARGET);
+	    		lastLeftTargetTime = time;
 
 	    		if(left_sees_cube) {
 	    			left_camera_x = x;
@@ -168,12 +168,12 @@ void *Network::threadLoop(void *args)
 	    	}
 	    }
 
-	    if((time - lastLeftCubeTime) > SEE_CUBE_TIMEOUT) {
-	    	left_sees_cube = false;
+	    if((time - lastLeftTargetTime) > SEE_TARGET_TIMEOUT) {
+	    	left_sees_target = false;
 	    }
 
-	    if((time - lastRightCubeTime) > SEE_CUBE_TIMEOUT) {
-	   	   right_sees_cube = false;
+	    if((time - lastRightTargetime) > SEE_TARGET_TIMEOUT) {
+	   	   right_sees_target = false;
 	    }
 	}
 
@@ -211,7 +211,7 @@ ssize_t Network::receivePacket(unsigned char *buf, size_t buf_len, ip_t *ip, uns
     return -1;
 }
 
-void Network::sendMode(E_SEARCH_MODE m, int times)
+void Network::sendMode(E_VISION_TARGET m, int times)
 {
 	size_t send_sig_len = strlen(SEND_MODE_SIG);
 	unsigned char buf[send_sig_len + 1];

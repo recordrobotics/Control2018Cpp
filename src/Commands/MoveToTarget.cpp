@@ -5,49 +5,54 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <Commands/MoveToTarget.h>
 #include <cmath>
 
 #include "../Utils/Logger.h"
 
-#include "MoveToCube.h"
-
 #include "../Robot.h"
 
-#include "Utils/Network.h"
-
-void MoveToCube::setState(E_AUTO_STATE s) {
+void MoveToTarget::setState(E_AUTO_STATE s) : finished(false) {
 	state = s;
 	lastStateChangeTime = MsTimer::getMs();
 }
 
-MoveToCube::MoveToCube() {
+MoveToTarget::MoveToTarget(E_VISION_TARGET t) : target(t) {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(&Robot::drivetrain);
 	setState(EAS_IDLE);
 }
 
 // Called just before this Command runs the first time
-void MoveToCube::Initialize() {
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kForward);
-	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kReverse);
+void MoveToTarget::Initialize() {
 	Robot::drivetrain.stop();
 
 	setState(EAS_MOVE);
-	Network::sendMode(ESM_CUBE, 10);
+
+	if(target == EVT_CUBE)
+		Network::sendMode(ESM_CUBE, 10);
+	else {
+		Network::sendMode(ESM_TAPE, 10);
+		Robot.drivetrain.setLights(true);
+	}
+
+	finished = false;
 }
 
 // Called repeatedly when this Command is scheduled to run
-void MoveToCube::Execute() {
-	if(state == EAS_IDLE || (!Network::leftSeesCube() && !Network::rightSeesCube())) {
-		Robot::drivetrain.drive(0.0, 0.0);
+void MoveToTarget::Execute() {
+	if(state == EAS_IDLE || (!Network::leftSeesTarget() && !Network::rightSeesTarget())) {
+		Robot::drivetrain.stop();
+		if((MsTimer::getMs() - lastStateChangeTime) > TIMEOUT_TIME)
+			finished = true;
 		return;
 	}
 
 	double x = 0.0;
 	double y = 0.0;
 
-	if(Network::leftSeesCube()) {
-		if(Network::rightSeesCube()) {
+	if(Network::leftSeesTarget()) {
+		if(Network::rightSeesTarget()) {
 			x = 0.5 * (Network::getLeftCameraX() + Network::getRightCameraX());
 			y = 0.5 * (Network::getLeftCameraY() + Network::getRightCameraY());
 		}
@@ -64,14 +69,13 @@ void MoveToCube::Execute() {
 	double forward = 0.2;
 
 	if(y < -0.85 && state == EAS_MOVE) {
-		setState(EAS_PREGRAB);
+		setState(EAS_COAST);
 		Robot::drivetrain.drive(-forward, -forward);
 	}
-	else if(state == EAS_PREGRAB && (MsTimer::getMs() - lastStateChangeTime) > PREGRAB_MOVE_TIME) {
-		setState(EAS_GRAB);
-		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
+	else if(state == EAS_COAST && (MsTimer::getMs() - lastStateChangeTime) > COAST_MOVE_TIME) {
+		setState(EAS_IDLE);
 		Robot::drivetrain.stop();
-		Network::sendMode(ESM_TAPE, 10);
+		finished = true;
 	}
 	else if(state == EAS_MOVE) {
 		double sens = 0.4;
@@ -99,21 +103,19 @@ void MoveToCube::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool MoveToCube::IsFinished() {
-	return false;
+bool MoveToTarget::IsFinished() {
+	return finished;
 }
 
 // Called once after isFinished returns true
-void MoveToCube::End() {
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
-	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
+void MoveToTarget::End() {
 	Robot::drivetrain.stop();
+	Robot.drivetrain.setLights(false);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MoveToCube::Interrupted() {
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
-	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
+void MoveToTarget::Interrupted() {
 	Robot::drivetrain.stop();
+	Robot.drivetrain.setLights(false);
 }

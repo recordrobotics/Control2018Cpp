@@ -12,6 +12,7 @@
 #include <Encoder.h>
 #include <ADXRS450_Gyro.h>
 #include <PIDOutput.h>
+#include <Relay.h>
 #include "../Commands/DrivewithJoystick.h"
 
 class PIDEncoder : public frc::PIDSource {
@@ -68,13 +69,15 @@ private:
 	frc::Encoder leftEncoder;
 	frc::Encoder rightEncoder;
 
-	PIDEncoder leftEncoderPID;
 	PIDEncoder rightEncoderPID;
+	PIDEncoder leftEncoderPID;
+
+	frc::ADXRS450_Gyro gyro;
 
 	DrivePIDOutput leftPIDOutput;
 	DrivePIDOutput rightPIDOutput;
 
-	frc::ADXRS450_Gyro gyro;
+	frc::Relay lights;
 
 public:
 	Drivetrain();
@@ -102,5 +105,7 @@ public:
 
 	inline frc::PIDSource *getLeftEncoderPID() const { return (frc::PIDSource*)&leftEncoderPID; }
 	inline frc::PIDSource *getRightEncoderPID() const { return (frc::PIDSource*)&rightEncoderPID; }
+
+	void setLights(bool s);
 };
 

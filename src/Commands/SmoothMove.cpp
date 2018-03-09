@@ -18,6 +18,7 @@ extern "C" {
 #include <pathfinder/spline.h>
 #include <pathfinder/fit.h>
 #include <pathfinder/modifiers/tank.h>
+#include <pathfinder/io.h>
 }
 
 SmoothMove::SmoothMove(const char *fname, const char *fconstants, double dt, double mvel, double macc, double mjerk) : constants_path(fconstants), curve_period(dt),
@@ -57,12 +58,15 @@ SmoothMove::SmoothMove(const char *fname, const char *fconstants, double dt, dou
 	else {
 		TrajectoryCandidate candidate;
 
-		pathfinder_prepare(&waypoints[0], waypoints.size(), FIT_HERMITE_QUINTIC, PATHFINDER_SAMPLES_HIGH, curve_period, max_vel, max_acc, max_jerk, &candidate);
+		pathfinder_prepare(&waypoints[0], waypoints.size(), FIT_HERMITE_QUINTIC, PATHFINDER_SAMPLES_FAST, curve_period, max_vel, max_acc, max_jerk, &candidate);
 
 		int length = candidate.length;
 		segments.resize(length);
 
 		pathfinder_generate(&candidate, &segments[0]);
+
+		leftsegments.resize(length);
+		rightsegments.resize(length);
 
 		pathfinder_modify_tank(&segments[0], length, &leftsegments[0], &rightsegments[0], wheelbase_width);
 	}
@@ -108,9 +112,6 @@ double SmoothMove::findClosest(const std::vector<Segment>& arr, double dist, int
 
 // Called just before this Command runs the first time
 void SmoothMove::Initialize() {
-	if(finished)
-		return;
-
 	last_dist_idx = 0;
 
 	start_time = MsTimer::getMs();
@@ -132,6 +133,13 @@ void SmoothMove::Initialize() {
 	start_time = MsTimer::getMs();
 	start_right_dist = Robot::drivetrain.getRightDistance();
 	start_left_dist = Robot::drivetrain.getLeftDistance();
+
+	if(Logger::getFp()) {
+		pathfinder_serialize(Logger::getFp(), &leftsegments[0], leftsegments.size());
+		pathfinder_serialize(Logger::getFp(), &rightsegments[0], rightsegments.size());
+	}
+
+	finished = false;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -141,7 +149,7 @@ void SmoothMove::Execute() {
 
 	std::ifstream fconst(constants_path);
 	if(fconst.is_open()) {
-		fconst >> k_p >> k_i >> k_d >> k_f >> k_di >> k_ti >> k_tolerance;
+		fconst >> k_p >> k_i >> k_d >> k_di >> k_ti >> k_tolerance;
 		fconst.close();
 	}
 

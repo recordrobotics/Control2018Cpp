@@ -21,6 +21,8 @@ void MoveDistance::Initialize() {
 	Robot::drivetrain.stop();
 
 	start_ang = Robot::drivetrain.getAngle();
+
+	finished = false;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -67,7 +69,7 @@ void MoveDistance::Execute() {
 	double right = left;
 
 	// Angle Factor
-	double ang_f = fabs(ang - start_ang * a_p) - fabs(ang_r * a_d);
+	double ang_f = fabs((ang - start_ang) * a_p) - fabs(ang_r * a_d);
 	if(ang_f < 0.0)
 		ang_f = 0.0;
 	else if(ang_f > a_m)

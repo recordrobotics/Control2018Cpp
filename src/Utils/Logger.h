@@ -17,6 +17,8 @@ public:
 
 	static void log(const char *format, ...);
 
+	static inline FILE *getFp() { return fp; }
+
 private:
 	Logger() { }
 

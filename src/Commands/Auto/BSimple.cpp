@@ -5,21 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Climber.h"
-#include "../RobotMap.h"
+#include <Commands/Auto/BSimple.h>
 
-#include "../RobotMap.h"
+#define ANGLE     30.0
+#define DISTANCE  6.0
 
-Climber::Climber() : Subsystem("Climber"), bottom_switch(bottomswitchPort),
-					 top_switch(topswitchPort), motor(climbmotorPort), default_command()
-{
-	stopMotor();
+BSimple::BSimple() : m_turnAngle(ANGLE, ETA_FORWARD), m_moveDistance(DISTANCE) {
+	AddSequential(m_turnAngle);
+	AddSequential(m_moveDistance);
 }
-
-void Climber::InitDefaultCommand() {
-	// Set the default command for a subsystem here.
-	SetDefaultCommand(&default_command);
-}
-
-// Put methods for controlling this subsystem
-// here. Call these from Commands.

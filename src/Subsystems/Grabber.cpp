@@ -6,8 +6,8 @@ Grabber::Grabber() : Subsystem("Grabber"), left_motor(leftgrabberPort), right_mo
 					 grab_solenoid(grabsolenoidmodulePort, grabsolenoidforwardPort, grabsolenoidbackwardPort),
 					 push_solenoid(pushsolenoidmodulePort, pushsolenoidforwardPort, pushsolenoidbackwardPort),
 					 //encoder(grabberencoderAPort, grabberencoderBPort, false, frc::Encoder::EncodingType::k1X)
-					 grab_solenoid_value(frc::DoubleSolenoid::Value::kReverse), push_solenoid_value(frc::DoubleSolenoid::Value::kReverse),
-					 rangeFinder(rangeFinderPort)
+					 grab_solenoid_value(frc::DoubleSolenoid::Value::kReverse), push_solenoid_value(frc::DoubleSolenoid::Value::kReverse)
+					 //rangeFinder(rangeFinderPort)
 {
 	/*encoder.Reset();
 	encoder.SetSamplesToAverage(9);

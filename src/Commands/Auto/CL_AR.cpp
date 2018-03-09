@@ -5,21 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Climber.h"
-#include "../RobotMap.h"
+#include <Commands/Auto/CL_AR.h>
 
-#include "../RobotMap.h"
-
-Climber::Climber() : Subsystem("Climber"), bottom_switch(bottomswitchPort),
-					 top_switch(topswitchPort), motor(climbmotorPort), default_command()
+CL_AR::CL_AR() : m_closeGrabber(false), m_moveToTape(EVT_TAPE), m_moveGrabberUp(true), m_openGrabber(true)
 {
-	stopMotor();
+	AddSequential(m_closeGrabber);
+	AddParallel(m_moveToTape);
+	AddSequential(m_moveGrabberUp);
+	AddSequential(m_openGrabber);
 }
-
-void Climber::InitDefaultCommand() {
-	// Set the default command for a subsystem here.
-	SetDefaultCommand(&default_command);
-}
-
-// Put methods for controlling this subsystem
-// here. Call these from Commands.

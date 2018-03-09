@@ -22,13 +22,13 @@ typedef uint32_t ip_t;
 #define PI_UPDATE_SIG         "q{A#;"
 #define SEND_MODE_SIG         "j@9."
 #define RECEIVE_LEN           256
-#define DOESNT_SEE_CUBE       1.5
-#define SEE_CUBE_TIMEOUT      1000
+#define DOESNT_SEE_TARGET     1.5
+#define SEE_TARGET_TIMEOUT    1000
 
-enum E_SEARCH_MODE {
-	ESM_CUBE = 0,
-	ESM_TAPE,
-	ESM_COUNT
+enum E_VISION_TARGET {
+	EVT_CUBE = 0,
+	EVT_TAPE,
+	EVT_COUNT
 };
 
 class Network {
@@ -44,8 +44,8 @@ public:
 	inline static double getRightCameraX() { return right_camera_x; }
 	inline static double getRightCameraY() { return right_camera_y; }
 
-	inline static bool leftSeesCube() { return left_sees_cube; }
-	inline static bool rightSeesCube() { return right_sees_cube; }
+	inline static bool leftSeesTarget() { return left_sees_target; }
+	inline static bool rightSeesTarget() { return right_sees_target; }
 
 	// Send to pis whether they should be looking for cubes or tape
 	static void sendMode(E_SEARCH_MODE m, int times);
@@ -70,8 +70,8 @@ private:
     static double right_camera_x;
     static double right_camera_y;
 
-    static bool left_sees_cube;
-    static bool right_sees_cube;
+    static bool left_sees_target;
+    static bool right_sees_target;
 
     static ip_t left_pi_ip;
     static ip_t right_pi_ip;
