@@ -10,26 +10,18 @@
 #include <Commands/CommandGroup.h>
 
 #include "../SetGrabber.h"
-#include "../TurnAngle.h"
 #include "../MoveToTarget.h"
 #include "../MoveGrabber.h"
 #include "../MoveTime.h"
 #include "../SpinGrabberTime.h"
+#include "../TurnAngle.h"
+#include "A_COneCube.h"
 
-class BL_BR : public frc::CommandGroup {
+class A_CTwoCube : public frc::CommandGroup {
 public:
-	BL_BR(bool left);
-
+	A_CTwoCube(bool left);
 private:
-	SetGrabber m_closeGrabber;
-	TurnAngle m_turnAngle;
-	MoveTime m_turnAngleSimple;
-	MoveTime m_moveToTapeSimple;
-	MoveGrabber m_moveGrabberUp;
-	SetGrabber m_openGrabber;
-	MoveToTarget m_moveToTape;
-	SpinGrabberTime m_spinGrabber;
-	MoveTime m_turnAngleSimple2;
+	A_COneCube m_oneCube;
 	MoveTime m_moveBack;
 	MoveGrabber m_moveGrabberDown;
 	TurnAngle m_turnRightAngle;
@@ -42,6 +34,5 @@ private:
 	MoveGrabber m_moveGrabberUp2;
 	SetGrabber m_closeGrabber2;
 	SetGrabber m_openGrabber2;
-	TurnAngle m_turnAngle2;
 };
 

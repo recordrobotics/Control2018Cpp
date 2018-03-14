@@ -5,10 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <Commands/Auto/CL_AR.h>
+#include <Commands/Auto/A_CTwoCube.h>
 
-CL_AR::CL_AR(bool left) : m_closeGrabber(false), m_moveToTape(EVT_TAPE), m_moveToTapeSimple(0.4, 0.4, 3000), m_moveGrabberUp(1.0, true, 3000),
-			     m_spinGrabber(1.0, -1.0, 2000), m_openGrabber(true),
+A_CTwoCube::A_CTwoCube(bool left) :
 				 m_moveBack(-0.3, -0.3, 300), m_moveGrabberDown(1.0, false, 3000),
 				 m_turnRightAngle(left ? 85.0 : -85.0, -0.05, ETA_SPOT, 3000), m_spinGrabberLong(-1.0, 1.0, 2000),
 				 m_moveForward(0.4, 0.4, 2000), m_moveBackLong(-0.4, -0.4, 2000),
@@ -16,12 +15,7 @@ CL_AR::CL_AR(bool left) : m_closeGrabber(false), m_moveToTape(EVT_TAPE), m_moveT
 				 m_moveForwardShort(0.3, 0.3, 300), m_spinGrabber2(1.0, -1.0, 2000),
 				 m_moveGrabberUp2(1.0, true, 3000), m_closeGrabber2(false), m_openGrabber2(true)
 {
-	AddSequential(&m_closeGrabber);
-	//AddParallel(&m_moveToTape);
-	AddParallel(&m_moveToTapeSimple);
-	AddSequential(&m_moveGrabberUp);
-	AddSequential(&m_openGrabber);
-	AddSequential(&m_spinGrabber);
+	AddSequential(&m_oneCube);
 	AddSequential(&m_moveBack);
 	AddParallel(&m_turnRightAngle);
 	AddSequential(&m_moveGrabberDown);

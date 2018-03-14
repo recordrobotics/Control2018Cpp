@@ -24,23 +24,21 @@ OI Robot::oi;
 Climber Robot::climber;
 Grabber Robot::grabber;
 
-Robot::Robot() : m_period(0.01), m_autonomousCommand(nullptr), m_BLCommand(true), m_BRCommand(false),
+Robot::Robot() : m_period(0.01), m_autonomousCommand(nullptr), m_moveForwardCommand(0.5, 0.5, 3000), m_AOneCubeCommand(), m_COneCubeCommand(),
+								 m_ATwoCubeCommand(false), m_CTwoCubeCommand(true), m_BLOneCubeCommand(true), m_BROneCubeCommand(false),
+								 m_BLTwoCubeCommand(true), m_BRTwoCubeCommand(false), m_BGoAwayLeftCommand(true), m_BGoAwayRightCommand(false)
+				/*m_BLCommand(true), m_BRCommand(false),
 				 m_BSimpleLeftCommand(true), m_BSimpleRightCommand(false), m_CLCommand(true),
 				 m_ARCommand(false), m_A_CSimpleCommand(0.5, 0.5, 3500), m_supersimpleCommand(0.5, 0.5, 3500),
-				 smoothMove("/path/path1", "/path/constants", 0.01, 10.0, 20.0, 40.0)
+				 smoothMove("/path/path1", "/path/constants", 0.01, 10.0, 20.0, 40.0)*/
 {
 	SetPeriod(m_period);
 }
 
 bool Robot::getAuto()
 {
-	if(autoChooser.GetSelected() == EAC_SUPERSIMPLE) {
-		m_autonomousCommand = &smoothMove;
-		//Logger::log("Simple");
-		return true;
-	}
-	else if(autoChooser.GetSelected() == EAC_SIMPLESWITCH) {
-		m_autonomousCommand = &m_A_CSimpleCommand;
+	if(autoChooser.GetSelected() == EAC_FORWARD) {
+		m_autonomousCommand = &m_moveForwardCommand;
 		//Logger::log("Simple");
 		return true;
 	}
@@ -82,9 +80,26 @@ void Robot::RobotInit() {
 	Network::init();
 	Logger::log("Begin!");
 
-	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
-	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
-	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_LEFT, ES_LEFT }, &m_COneCubeCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_LEFT, ES_RIGHT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_RIGHT, ES_LEFT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_RIGHT, ES_RIGHT }, &m_AOneCubeCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_CENTER, ES_LEFT }, &m_BLOneCubeCommand });
+	autoMap.insert({ { EAC_ONECUBE, ESP_CENTER, ES_RIGHT }, &m_BROneCubeCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_LEFT, ES_LEFT }, &m_CTwoCubeCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_LEFT, ES_RIGHT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_RIGHT, ES_LEFT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_RIGHT, ES_RIGHT }, &m_ATwoCubeCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_CENTER, ES_LEFT }, &m_BLTwoCubeCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_CENTER, ES_RIGHT }, &m_BRTwoCubeCommand });
+	autoMap.insert({ { EAC_TWOCUBE, ESP_LEFT, ES_RIGHT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_LEFT, ES_LEFT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_LEFT, ES_RIGHT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_RIGHT, ES_LEFT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_RIGHT, ES_RIGHT }, &m_moveForwardCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_CENTER, ES_LEFT }, &m_BGoAwayRightCommand });
+	autoMap.insert({ { EAC_GOAWAY, ESP_CENTER, ES_RIGHT }, &m_BGoAwayLeftCommand });
+	/*autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
 	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
 	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
 	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
@@ -105,14 +120,12 @@ void Robot::RobotInit() {
 	autoMap.insert({ { EAC_NEARSWITCH, ESP_RIGHT, ES_LEFT }, &m_A_CSimpleCommand });
 	autoMap.insert({ { EAC_NEARSWITCH, ESP_RIGHT, ES_RIGHT }, &m_ARCommand });
 	autoMap.insert({ { EAC_NEARSWITCH, ESP_CENTER, ES_LEFT }, &m_BLCommand });
-	autoMap.insert({ { EAC_NEARSWITCH, ESP_CENTER, ES_RIGHT }, &m_BRCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_CENTER, ES_RIGHT }, &m_BRCommand });*/
 
-	autoChooser.AddDefault("SuperSimple", EAC_SUPERSIMPLE);
-	autoChooser.AddObject("SimpleSwitch", EAC_SIMPLESWITCH);
-	autoChooser.AddObject("SimpleLeft", EAC_SIMPLE_LEFT);
-	autoChooser.AddObject("SimpleRight", EAC_SIMPLE_RIGHT);
-	autoChooser.AddObject("SimpleAway", EAC_SIMPLE_AWAY);
-	autoChooser.AddObject("NearSwitch", EAC_NEARSWITCH);
+	autoChooser.AddDefault("Forward", EAC_FORWARD);
+	autoChooser.AddObject("OneCube", EAC_ONECUBE);
+	autoChooser.AddObject("TwoCube", EAC_TWOCUBE);
+	autoChooser.AddObject("GoAway", EAC_GOAWAY);
 
 	positionChooser.AddDefault("Left", ESP_LEFT);
 	positionChooser.AddObject("Center", ESP_CENTER);

@@ -5,17 +5,15 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <Commands/Auto/BSimple.h>
+#include <Commands/Auto/A_COneCube.h>
 
-#define ANGLE     30.0
-#define DISTANCE  4.0
-
-BSimple::BSimple(bool left) : m_turnAngle(left ? -ANGLE: ANGLE, 0.0, ETA_FORWARD, 1000),
-							  m_turnAngleSimple(left ? 0.0 : 0.3, left ? 0.3 : 0.0, 2000), m_moveDistance(DISTANCE),
-							  m_moveDistanceSimple(0.5, 0.5, 4000)
+A_COneCube::A_COneCube() : m_closeGrabber(false), m_moveToTape(EVT_TAPE), m_moveToTapeSimple(0.4, 0.4, 3000), m_moveGrabberUp(1.0, true, 3000),
+						   m_spinGrabber(1.0, -1.0, 2000), m_openGrabber(true)
 {
-	AddSequential(&m_turnAngle);
-	//AddSequential(&m_turnAngleSimple);
-	//AddSequential(&m_moveDistance);
-	AddSequential(&m_moveDistanceSimple);
+	AddSequential(&m_closeGrabber);
+	//AddParallel(&m_moveToTape);
+	AddParallel(&m_moveToTapeSimple);
+	AddSequential(&m_moveGrabberUp);
+	AddSequential(&m_openGrabber);
+	AddSequential(&m_spinGrabber);
 }

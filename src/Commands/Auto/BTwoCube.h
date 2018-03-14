@@ -9,18 +9,32 @@
 
 #include <Commands/CommandGroup.h>
 
+#include "../SetGrabber.h"
 #include "../TurnAngle.h"
-#include "../MoveDistance.h"
+#include "../MoveToTarget.h"
+#include "../MoveGrabber.h"
 #include "../MoveTime.h"
+#include "../SpinGrabberTime.h"
 
-class BSimple : public frc::CommandGroup {
+#include "BOneCube.h"
+
+class BTwoCube : public frc::CommandGroup {
 public:
-	BSimple(bool left);
+	BTwoCube(bool left);
 
 private:
-	TurnAngle m_turnAngle;
-	MoveTime m_turnAngleSimple;
-	MoveDistance m_moveDistance;
-	MoveTime m_moveDistanceSimple;
+	BOneCube m_oneCube;
+	MoveTime m_moveBack;
+	MoveGrabber m_moveGrabberDown;
+	TurnAngle m_turnRightAngle;
+	SpinGrabberTime m_spinGrabberLong;
+	MoveTime m_moveForward;
+	MoveTime m_moveBackLong;
+	TurnAngle m_turnRightAngle2;
+	MoveTime m_moveForwardShort;
+	SpinGrabberTime m_spinGrabber2;
+	MoveGrabber m_moveGrabberUp2;
+	SetGrabber m_closeGrabber2;
+	SetGrabber m_openGrabber2;
 };
 

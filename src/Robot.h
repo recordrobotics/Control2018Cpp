@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Commands/Auto/A_CTwoCube.h>
+#include <Commands/Auto/BTwoCube.h>
 #include <unordered_map>
 
 #include "Subsystems/Drivetrain.h"
@@ -12,22 +14,24 @@
 #include <SmartDashboard/SmartDashboard.h>
 #include "Subsystems/Climber.h"
 #include "Subsystems/Grabber.h"
+#include "Commands/Auto/A_COneCube.h"
+#include "Commands/Auto/A_CTwoCube.h"
+#include "Commands/Auto/BOneCube.h"
+#include "Commands/Auto/BTwoCube.h"
 
-#include "Commands/Auto/BL_BR.h"
 #include "Commands/Auto/BSimple.h"
-#include "Commands/Auto/CL_AR.h"
 #include "Commands/SmoothMove.h"
 
+// List of autonomous modes to be selected by driver
 enum E_AUTO_CHOOSE {
-	EAC_SUPERSIMPLE = 0,
-	EAC_SIMPLESWITCH,
-	EAC_SIMPLE_LEFT,
-	EAC_SIMPLE_RIGHT,
-	EAC_SIMPLE_AWAY,
-	EAC_NEARSWITCH,
+	EAC_FORWARD = 0,
+	EAC_ONECUBE,
+	EAC_TWOCUBE,
+	EAC_GOAWAY,
 	EAC_COUNT
 };
 
+// Start position of robot as selected by driver
 enum E_START_POSITION {
 	ESP_LEFT = 0,
 	ESP_CENTER,
@@ -74,7 +78,7 @@ private:
 	double m_period;
 
 	frc::Command *m_autonomousCommand;
-	BL_BR m_BLCommand;
+	/*BL_BR m_BLCommand;
 	BL_BR m_BRCommand;
 	BSimple m_BSimpleLeftCommand;
 	BSimple m_BSimpleRightCommand;
@@ -82,7 +86,18 @@ private:
 	CL_AR m_ARCommand;
 	MoveTime m_A_CSimpleCommand;
 	MoveTime m_supersimpleCommand;
-	SmoothMove smoothMove;
+	SmoothMove smoothMove;*/
+	MoveTime m_moveForwardCommand;
+	A_COneCube m_AOneCubeCommand;
+	A_COneCube m_COneCubeCommand;
+	A_CTwoCube m_ATwoCubeCommand;
+	A_CTwoCube m_CTwoCubeCommand;
+	BOneCube m_BLOneCubeCommand;
+	BOneCube m_BROneCubeCommand;
+	BTwoCube m_BLTwoCubeCommand;
+	BTwoCube m_BRTwoCubeCommand;
+	BSimple m_BGoAwayLeftCommand;
+	BSimple m_BGoAwayRightCommand;
 
 	frc::SendableChooser<E_AUTO_CHOOSE> autoChooser;
 	frc::SendableChooser<E_START_POSITION> positionChooser;
