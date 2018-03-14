@@ -11,12 +11,12 @@
 
 #include "../Utils/Logger.h"
 
-#define ENCODER_DISTANCE  (5.224 * 0.1524 * 3.141592 / 1440.0)
+#define ENCODER_DISTANCE  (-5.224 * 0.1524 * 3.141592 / 1440.0)
 
 Drivetrain::Drivetrain() : Subsystem("Drivetrain"), left_motor1(leftmotor1Port),
 		left_motor2(leftmotor2Port), right_motor1(rightmotor1Port), right_motor2(rightmotor2Port),
 		m_left(0.0), m_right(0.0), default_command(), leftEncoder(leftEncoderPort1, leftEncoderPort2),
-	 	rightEncoder(rightEncoderPort1, rightEncoderPort2, true), leftEncoderPID(&leftEncoder), rightEncoderPID(&rightEncoder),
+	 	rightEncoder(rightEncoderPort1, rightEncoderPort2, true), rightEncoderPID(&rightEncoder), leftEncoderPID(&leftEncoder),
 		gyro(frc::SPI::Port::kOnboardCS0), leftPIDOutput(&left_motor1, &left_motor2, true),
 		rightPIDOutput(&right_motor1, &right_motor2, false), lights(lightsPort, frc::Relay::Direction::kForwardOnly)
 {
@@ -35,10 +35,10 @@ void Drivetrain::drive(double left, double right) {
 
 	//Logger::log("motors: %f %f", m_left, m_right);
 
-	left_motor1.Set(-m_left);
-	left_motor2.Set(-m_left);
-	right_motor1.Set(m_right);
-	right_motor2.Set(m_right);
+	left_motor1.Set(m_left);
+	left_motor2.Set(m_left);
+	right_motor1.Set(-m_right);
+	right_motor2.Set(-m_right);
 }
 
 void Drivetrain::stop() {

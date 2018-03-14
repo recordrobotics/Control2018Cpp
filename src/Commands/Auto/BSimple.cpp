@@ -10,7 +10,10 @@
 #define ANGLE     30.0
 #define DISTANCE  6.0
 
-BSimple::BSimple() : m_turnAngle(ANGLE, ETA_FORWARD), m_moveDistance(DISTANCE) {
-	AddSequential(m_turnAngle);
-	AddSequential(m_moveDistance);
+BSimple::BSimple(bool left) : m_turnAngle(left ? -ANGLE: ANGLE, 0.0, ETA_FORWARD, 1000), m_moveDistance(DISTANCE),
+							  m_turnAngleSimple(left ? 0.0 : 0.5, left ? 0.5 : 0.0, 300)
+{
+	AddSequential(&m_turnAngle);
+	//AddSequential(&m_turnAngleSimple);
+	AddSequential(&m_moveDistance);
 }

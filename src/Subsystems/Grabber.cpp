@@ -4,9 +4,9 @@
 
 Grabber::Grabber() : Subsystem("Grabber"), left_motor(leftgrabberPort), right_motor(rightgrabberPort),
 					 grab_solenoid(grabsolenoidmodulePort, grabsolenoidforwardPort, grabsolenoidbackwardPort),
-					 push_solenoid(pushsolenoidmodulePort, pushsolenoidforwardPort, pushsolenoidbackwardPort),
+					 extend_solenoid(extendsolenoidmodulePort, extendsolenoidforwardPort, extendsolenoidbackwardPort),
 					 //encoder(grabberencoderAPort, grabberencoderBPort, false, frc::Encoder::EncodingType::k1X)
-					 grab_solenoid_value(frc::DoubleSolenoid::Value::kReverse), push_solenoid_value(frc::DoubleSolenoid::Value::kReverse)
+					 grab_solenoid_value(frc::DoubleSolenoid::Value::kOff)
 					 //rangeFinder(rangeFinderPort)
 {
 	/*encoder.Reset();
@@ -14,9 +14,7 @@ Grabber::Grabber() : Subsystem("Grabber"), left_motor(leftgrabberPort), right_mo
 	encoder.SetDistancePerPulse(20);
 	encoder.SetMaxPeriod(0.05);*/
 	setGrabSolenoid(grab_solenoid_value);
-	setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
-	setPushSolenoid(push_solenoid_value);
-	setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
+	setExtendSolenoid(frc::DoubleSolenoid::Value::kOff);
 }
 
 void Grabber::setGrabSolenoid(frc::DoubleSolenoid::Value v)
@@ -25,14 +23,24 @@ void Grabber::setGrabSolenoid(frc::DoubleSolenoid::Value v)
 
 	if(v != frc::DoubleSolenoid::Value::kOff)
 		grab_solenoid_value = v;
+
+	if(v == frc::DoubleSolenoid::Value::kForward)
+		Logger::log("forward");
+	else
+		Logger::log("reverse");
 }
 
-void Grabber::setPushSolenoid(frc::DoubleSolenoid::Value v)
+void Grabber::setExtendSolenoid(frc::DoubleSolenoid::Value v)
 {
-	push_solenoid.Set(v);
+	extend_solenoid.Set(v);
 
 	if(v != frc::DoubleSolenoid::Value::kOff)
-		push_solenoid_value = v;
+		extend_solenoid_value = v;
+
+	if(v == frc::DoubleSolenoid::Value::kForward)
+		Logger::log("extend forward");
+	else
+		Logger::log("extend reverse");
 }
 
 void Grabber::toggleGrabSolenoid()
@@ -43,38 +51,38 @@ void Grabber::toggleGrabSolenoid()
 		setGrabSolenoid(frc::DoubleSolenoid::Value::kReverse);
 }
 
-void Grabber::togglePushSolenoid()
+void Grabber::toggleExtendSolenoid()
 {
-	if(push_solenoid_value == frc::DoubleSolenoid::Value::kReverse)
-		setPushSolenoid(frc::DoubleSolenoid::Value::kForward);
+	if(extend_solenoid_value == frc::DoubleSolenoid::Value::kReverse)
+		setExtendSolenoid(frc::DoubleSolenoid::Value::kForward);
 	else
-		setPushSolenoid(frc::DoubleSolenoid::Value::kReverse);
+		setExtendSolenoid(frc::DoubleSolenoid::Value::kReverse);
 }
 
 void Grabber::succ(double speed)
 {
-	set(speed, -speed);
+	setMotors(speed, -speed);
 }
 
 void Grabber::adjust(double speed, bool direction)
 {
 	if (direction)
 	{
-		set(speed, speed);
+		setMotors(speed, speed);
 	}
 	else
 	{
-		set(-speed, -speed);
+		setMotors(-speed, -speed);
 	}
 }
 
-void Grabber::set(double left, double right)
+void Grabber::setMotors(double left, double right)
 {
 	left_motor.Set(left);
 	right_motor.Set(right);
 }
 
-void Grabber::stop()
+void Grabber::stopMotors()
 {
 	left_motor.Set(0.0);
 	right_motor.Set(0.0);

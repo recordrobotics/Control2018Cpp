@@ -12,62 +12,77 @@
 
 #include "../Utils/Logger.h"
 
-GrabberCommand::GrabberCommand() : last_push_toggle(false), last_grab_toggle(false) {
+GrabberCommand::GrabberCommand() : /*last_push_toggle(false),*/ last_grab_toggle(false) {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(&Robot::grabber);
 }
 
 // Called just before this Command runs the first time
 void GrabberCommand::Initialize() {
-	Robot::grabber.stop();
+	Robot::grabber.stopMotors();
 	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
+	//Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void GrabberCommand::Execute() {
-	double maxGrabberMotorSpeed = 0.5;
+	double maxGrabberMotorSpeed = 1.0;
 
-	bool left_motor_left = false;
+	/*bool left_motor_left = false;
 	bool left_motor_right = false;
 	bool right_motor_left = false;
-	bool right_motor_right = false;
+	bool right_motor_right = false;*/
 
-	Logger::log("pov: %d", Robot::oi.getLeftJoystick().GetPOV(0));
+	int left_pov = Robot::oi.getLeftJoystick().GetPOV(0);
+	//int right_pov = Robot::oi.getRightJoystick().GetPOV(0);
+	//Logger::log("pov: %d", left_pov);
 
 	double left = 0.0, right = 0.0;
 
-	if(left_motor_left && !left_motor_right)
+	if(left_pov != -1 && (left_pov >= 315 || left_pov <= 45)) {
 		left = maxGrabberMotorSpeed;
-	else if(left_motor_right && !left_motor_left)
-		left = maxGrabberMotorSpeed;
+		right = -maxGrabberMotorSpeed;
+	}
+	else if(left_pov >= 135 && left_pov <= 225) {
+		left = -maxGrabberMotorSpeed;
+		right = maxGrabberMotorSpeed;
+	}
 
-	if(right_motor_left && !right_motor_right)
-		right = maxGrabberMotorSpeed;
-	else if(right_motor_right && !right_motor_left)
-		right = maxGrabberMotorSpeed;
+	/*if(right_pov >= 45 && right_pov <= 135)
+		right = -maxGrabberMotorSpeed;
+	else if(right_pov >= 225 && right_pov <= 315)
+		right = maxGrabberMotorSpeed;*/
 
 	//double right = maxGrabberMotorSpeed * Robot::oi.getRightJoystick().GetZ();
 
 	//bool open = Robot::oi.getRightJoystick().GetRawButton(opengrabberbuttonPort);
 	//bool close = Robot::oi.getLeftJoystick().GetRawButton(closegrabberbuttonPort);
 
-	bool push_toggle = Robot::oi.getLeftJoystick().GetRawButton(togglegrabberbuttonPort);
+	bool extend_toggle = Robot::oi.getLeftJoystick().GetRawButton(toggleextendbuttonPort);
 	bool grab_toggle = Robot::oi.getRightJoystick().GetRawButton(togglegrabberbuttonPort);
 
-	Logger::log("Push joystick: %d", push_toggle);
+	//Logger::log("Push joystick: %d", push_toggle);
 
-	if(push_toggle && !last_push_toggle)
-		Robot::grabber.togglePushSolenoid();
+	if(extend_toggle && !last_extend_toggle) {
+		Robot::grabber.toggleExtendSolenoid();
+
+		/*if(v) {
+			spin_push = 1;
+			Robot::grabber.setMotors(-maxGrabberMotorSpeed, -maxGrabberMotorSpeed);
+		}
+		else {
+
+		}*/
+	}
 
 	if(grab_toggle && !last_grab_toggle)
 		Robot::grabber.toggleGrabSolenoid();
 
-	last_push_toggle = push_toggle;
+	last_extend_toggle = extend_toggle;
 	last_grab_toggle = grab_toggle;
 
 	//Logger::log("grabber: %f %f", left, right);
-	Robot::grabber.set(left, right);
+	Robot::grabber.setMotors(left, right);
 
 	/*if(open && !close)
 		Robot::grabber.setSolenoid(frc::DoubleSolenoid::Value::kForward);
@@ -84,15 +99,15 @@ bool GrabberCommand::IsFinished() {
 
 // Called once after isFinished returns true
 void GrabberCommand::End() {
-	Robot::grabber.stop();
+	Robot::grabber.stopMotors();
 	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
+	//Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void GrabberCommand::Interrupted() {
-	Robot::grabber.stop();
+	Robot::grabber.stopMotors();
 	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
-	Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
+	//Robot::grabber.setPushSolenoid(frc::DoubleSolenoid::Value::kOff);
 }

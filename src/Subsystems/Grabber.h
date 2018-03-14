@@ -16,8 +16,8 @@ private:
 
 	frc::Spark left_motor, right_motor;
 
-	frc::DoubleSolenoid grab_solenoid, push_solenoid;
-	frc::DoubleSolenoid::Value grab_solenoid_value, push_solenoid_value;
+	frc::DoubleSolenoid grab_solenoid, extend_solenoid;
+	frc::DoubleSolenoid::Value grab_solenoid_value, extend_solenoid_value;
 
 	GrabberCommand default_command;
 
@@ -29,14 +29,14 @@ public:
 	void setGrabSolenoid(frc::DoubleSolenoid::Value v);
 	void toggleGrabSolenoid();
 
-	void setPushSolenoid(frc::DoubleSolenoid::Value v);
-	void togglePushSolenoid();
+	void setExtendSolenoid(frc::DoubleSolenoid::Value v);
+	void toggleExtendSolenoid();
 
 	void succ(double speed);
 	void adjust(double speed, bool direction);
 
-	void set(double left, double right);
-	void stop();
+	void setMotors(double left, double right);
+	void stopMotors();
 
 	//inline double getFinderDistance() const { return rangeFinder.getDistance(); }
 

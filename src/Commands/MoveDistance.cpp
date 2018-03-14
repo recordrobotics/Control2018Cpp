@@ -75,6 +75,8 @@ void MoveDistance::Execute() {
 	else if(ang_f > a_m)
 		ang_f = a_m;
 
+	Logger::log("%f", ang_f);
+
 	ang_f *= sign(ang - start_ang);
 
 	right += ang_f;

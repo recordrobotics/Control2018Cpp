@@ -24,15 +24,57 @@ OI Robot::oi;
 Climber Robot::climber;
 Grabber Robot::grabber;
 
-Robot::Robot() : m_period(0.01), m_moveToCubeCommand(), m_autonomousCommand()
+Robot::Robot() : m_period(0.01), m_autonomousCommand(nullptr), m_BLCommand(true), m_BRCommand(false),
+				 m_BSimpleLeftCommand(true), m_BSimpleRightCommand(false), m_CLCommand(true),
+				 m_ARCommand(false), m_A_CSimpleCommand(0.5, 0.5, 3500), m_supersimpleCommand(0.5, 0.5, 3500),
+				 smoothMove("/path/path1", "/path/constants", 0.01, 10.0, 20.0, 40.0)
 {
 	SetPeriod(m_period);
 }
 
-void Robot::getGameMessage()
+bool Robot::getAuto()
 {
-	gameMes = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+	if(autoChooser.GetSelected() == EAC_SUPERSIMPLE) {
+		m_autonomousCommand = &smoothMove;
+		//Logger::log("Simple");
+		return true;
+	}
+	else if(autoChooser.GetSelected() == EAC_SIMPLESWITCH) {
+		m_autonomousCommand = &m_A_CSimpleCommand;
+		//Logger::log("Simple");
+		return true;
+	}
+
+	std::string s = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+
+	//Logger::log("Message: %s", s.c_str());
+
+	if(s.length() > 0) {
+		E_AUTO_CHOOSE choose = autoChooser.GetSelected();
+		E_START_POSITION position = positionChooser.GetSelected();
+		E_SWITCH switch_pos = ES_COUNT;
+
+		if(s[0] == 'L')
+			switch_pos = ES_LEFT;
+		else if(s[0] == 'R')
+			switch_pos = ES_RIGHT;
+
+		if(switch_pos != ES_COUNT) {
+			auto it = autoMap.find({ choose, position, switch_pos });
+
+			if(it != autoMap.end()) {
+				m_autonomousCommand = it->second;
+				//Logger::log("%d %d %d found", choose, position, switch_pos);
+				return true;
+			}
+			//else
+			//	Logger::log("%d %d %d not found", choose, position, switch_pos);
+		}
+	}
+
+	return false;
 }
+
 
 void Robot::RobotInit() {
 	MsTimer::init();
@@ -40,30 +82,139 @@ void Robot::RobotInit() {
 	Network::init();
 	Logger::log("Begin!");
 
-	m_autonomousCommand = &m_BSimpleCommand;
-	chooser.AddDefault("BSimple", &m_BSimpleCommand);
-	/*chooser.AddDefault("BSimple", m_BSimpleCommand);
-	chooser.AddObject("BL_BR", m_BL_BRCommand);
-	chooser.AddObject("CL_AR", m_CL_ARCommand);
-	chooser.AddObject("ACSimple", m_A_CSimpleCommand);*/
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_LEFT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_RIGHT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_RIGHT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_RIGHT, ES_LEFT}, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_RIGHT, ES_RIGHT}, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_RIGHT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_RIGHT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_CENTER, ES_LEFT }, &m_BSimpleLeftCommand });
+	autoMap.insert({ { EAC_SIMPLE_LEFT, ESP_CENTER, ES_RIGHT }, &m_BSimpleLeftCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_CENTER, ES_LEFT }, &m_BSimpleRightCommand });
+	autoMap.insert({ { EAC_SIMPLE_RIGHT, ESP_CENTER, ES_RIGHT }, &m_BSimpleRightCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_CENTER, ES_LEFT }, &m_BSimpleRightCommand });
+	autoMap.insert({ { EAC_SIMPLE_AWAY, ESP_CENTER, ES_RIGHT }, &m_BSimpleLeftCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_LEFT, ES_LEFT }, &m_CLCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_LEFT, ES_RIGHT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_RIGHT, ES_LEFT }, &m_A_CSimpleCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_RIGHT, ES_RIGHT }, &m_ARCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_CENTER, ES_LEFT }, &m_BLCommand });
+	autoMap.insert({ { EAC_NEARSWITCH, ESP_CENTER, ES_RIGHT }, &m_BRCommand });
+
+	autoChooser.AddDefault("SuperSimple", EAC_SUPERSIMPLE);
+	autoChooser.AddObject("SimpleSwitch", EAC_SIMPLESWITCH);
+	autoChooser.AddObject("SimpleLeft", EAC_SIMPLE_LEFT);
+	autoChooser.AddObject("SimpleRight", EAC_SIMPLE_RIGHT);
+	autoChooser.AddObject("SimpleAway", EAC_SIMPLE_AWAY);
+	autoChooser.AddObject("NearSwitch", EAC_NEARSWITCH);
+
+	positionChooser.AddDefault("Left", ESP_LEFT);
+	positionChooser.AddObject("Center", ESP_CENTER);
+	positionChooser.AddObject("Right", ESP_RIGHT);
+
+	frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
+	frc::SmartDashboard::PutData("Position Chooser", &positionChooser);
+
+	drivetrain.setLights(false);
+	grabber.setExtendSolenoid(frc::DoubleSolenoid::Value::kReverse);
 }
 
 void Robot::RobotPeriodic() {
 	//rangeFinder.update();
 	//Logger::log("Angle: %f", drivetrain.getAngle());
-	Logger::log("Encoders: %f, %f", drivetrain.getLeftRate(), drivetrain.getRightRate());
+	//Logger::log("Encoders: %f, %f", drivetrain.getLeftRate(), drivetrain.getRightRate());
+
+	//std::string s = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+
+	//Logger::log("Message: %s", s.c_str());
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+}
 
 void Robot::DisabledPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 
-	getGameMessage();
+	getAuto();
 }
 
 void Robot::AutonomousInit() {
-	getGameMessage();
+	/*getGameMessage();
+
+	E_START_POSITION pos = positionChooser.getSelected();
+	E_AUTO_CHOOSE choose = autochooser.getSelected();
+
+	if(gameMes.length) {
+		if(gameMes[0] == 'L') {
+			switch(pos) {
+			case ESP_LEFT:
+				if(choose == EAC_SIMPLE_LEFT || choose == EAC_SIMPLE_RIGHT)
+					m_autonomousCommand = &m_A_CSimpleCommand;
+				else if(choose == EAC_NEARSWITCH)
+					m_autonomousCommand = &m_CL_ARCommand;
+				break;
+			case ESP_RIGHT:
+				if(choose == EAC_SIMPLE_LEFT || choose == EAC_SIMPLE_RIGHT || choose == EAC_NEARSWITCH)
+					m_autonomousCommand = &m_A_CSimpleCommand;
+				break;
+			case ESP_CENTER:
+				switch(choose) {
+				case EAC_SIMPLE_LEFT:
+					m_autonomousCommand = &m_BSimpleLeftCommand;
+					break;
+				case EAC_SIMPLE_RIGHT:
+					m_autonomousCommand = &m_BSimpleRightCommand;
+					break;
+				case EAC_NEARSWITCH:
+					m_autonomousCommand = &m_BLCommand;
+					break;
+				};
+				break;
+			default:
+				break;
+			};
+		}
+		else if(gameMes[0] == 'R') {
+			switch(pos) {
+			case ESP_RIGHT:
+				if(choose == EAC_SIMPLE_LEFT || choose == EAC_SIMPLE_RIGHT)
+					m_autonomousCommand = &m_A_CSimpleCommand;
+				else if(choose == EAC_NEARSWITCH)
+					m_autonomousCommand = &m_CL_ARCommand;
+				break;
+			case ESP_LEFT:
+				if(choose == EAC_SIMPLE_LEFT || choose == EAC_SIMPLE_RIGHT || choose == EAC_NEARSWITCH)
+					m_autonomousCommand = &m_A_CSimpleCommand;
+				break;
+			case ESP_CENTER:
+				switch(choose) {
+				case EAC_SIMPLE_LEFT:
+					m_autonomousCommand = &m_BSimpleLeftCommand;
+					break;
+				case EAC_SIMPLE_RIGHT:
+					m_autonomousCommand = &m_BSimpleRightCommand;
+					break;
+				case EAC_NEARSWITCH:
+					m_autonomousCommand = &m_BRCommand;
+					break;
+				};
+				break;
+			default:
+				break;
+			};
+		}
+	}*/
+
+	getAuto();
+
+	grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
+	grabber.setExtendSolenoid(frc::DoubleSolenoid::Value::kForward);
 
 	if (m_autonomousCommand != nullptr) {
 		m_autonomousCommand->Start();
@@ -75,6 +226,9 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+	grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
+	grabber.setExtendSolenoid(frc::DoubleSolenoid::Value::kForward);
+
 	if (m_autonomousCommand != nullptr) {
 		m_autonomousCommand->Cancel();
 		m_autonomousCommand = nullptr;

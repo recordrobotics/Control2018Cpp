@@ -8,6 +8,7 @@
 #ifndef SRC_UTILS_LOGGER_H_
 #define SRC_UTILS_LOGGER_H_
 
+#include <pthread.h>
 #include <stdio.h>
 
 class Logger {
@@ -23,6 +24,7 @@ private:
 	Logger() { }
 
 	static FILE *fp;
+	static pthread_mutex_t mutex;
 };
 
 #endif /* SRC_UTILS_LOGGER_H_ */

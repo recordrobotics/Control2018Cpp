@@ -37,11 +37,12 @@ constexpr int rightgrabberPort = 6;
 
 // Other actuators
 constexpr int grabsolenoidmodulePort = 0;
-constexpr int grabsolenoidforwardPort = 0;
-constexpr int grabsolenoidbackwardPort = 1;
-constexpr int pushsolenoidmodulePort = 0;
-constexpr int pushsolenoidforwardPort = 2;
-constexpr int pushsolenoidbackwardPort = 3;
+constexpr int grabsolenoidforwardPort = 2;
+constexpr int grabsolenoidbackwardPort = 3;
+constexpr int extendsolenoidmodulePort = 0;
+constexpr int extendsolenoidforwardPort = 0;
+constexpr int extendsolenoidbackwardPort = 1;
+constexpr int lightsPort = 0;
 
 // Joysticks and buttons
 constexpr int leftjoystickPort = 0;
@@ -50,15 +51,16 @@ constexpr int climberbuttonPort = 1;
 //constexpr int opengrabberbuttonPort = 5;
 //constexpr int closegrabberbuttonPort = 6;
 constexpr int togglegrabberbuttonPort = 2;
+constexpr int toggleextendbuttonPort = 7;
 constexpr int forward_axis = 1;
 constexpr int grabber_axis = 0;
 
 // Sensors
-constexpr int bottomswitchPort = 1;
-constexpr int topswitchPort = 2;
+constexpr int bottomswitchPort = 2;
+constexpr int topswitchPort = 1;
 constexpr int rangefinderPort = 0;
-constexpr int leftEncoderPort1 = 5;
-constexpr int leftEncoderPort2 = 6;
-constexpr int rightEncoderPort1 = 4;
-constexpr int rightEncoderPort2 = 3;
+constexpr int leftEncoderPort1 = 4;
+constexpr int leftEncoderPort2 = 3;
+constexpr int rightEncoderPort1 = 5;
+constexpr int rightEncoderPort2 = 6;
 constexpr frc::SerialPort::Port rangeFinderPort = frc::SerialPort::Port::kOnboard;

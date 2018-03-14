@@ -9,9 +9,11 @@
 
 #include <Commands/Command.h>
 
-class GrabberCommand : public frc::Command {
+#include "../Utils/MsTimer.h"
+
+class SpinGrabberTime : public frc::Command {
 public:
-	GrabberCommand();
+	SpinGrabberTime(double left, double right, ms_t time);
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
@@ -19,6 +21,9 @@ public:
 	void Interrupted() override;
 
 private:
-	bool last_extend_toggle, last_grab_toggle;
+	double m_left;
+	double m_right;
+	ms_t m_time;
+	ms_t startTime;
 };
 

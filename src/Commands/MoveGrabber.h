@@ -9,9 +9,11 @@
 
 #include <Commands/Command.h>
 
+#include "../Utils/MsTimer.h"
+
 class MoveGrabber : public frc::Command {
 public:
-	MoveGrabber(double v, bool dir);
+	MoveGrabber(double v, bool dir, ms_t timeout);
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
@@ -21,5 +23,7 @@ public:
 private:
 	double m_vel;
 	bool m_dir;
+	ms_t startTime;
+	ms_t m_timeout;
 };
 

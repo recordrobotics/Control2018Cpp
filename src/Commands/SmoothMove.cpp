@@ -150,6 +150,7 @@ void SmoothMove::Execute() {
 	std::ifstream fconst(constants_path);
 	if(fconst.is_open()) {
 		fconst >> k_p >> k_i >> k_d >> k_di >> k_ti >> k_tolerance;
+		Logger::log("%f %f %f %f %f %f", k_p, k_i, k_d, k_di, k_ti, k_tolerance);
 		fconst.close();
 	}
 

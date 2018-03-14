@@ -26,7 +26,7 @@ void ClimberCommand::Execute() {
 	bool butt = Robot::oi.getRightJoystick().GetRawButton(climberbuttonPort);
 	bool butt_v2 = Robot::oi.getLeftJoystick().GetRawButton(climberbuttonPort);
 
-	double climberMoveSpeed = 0.5;
+	double climberMoveSpeed = 1.0;
 	double move = climberMoveSpeed * (double)((int)butt - (int)butt_v2);
 
 	if(move < 0.0 && !Robot::climber.getBottomSwitch())
@@ -34,7 +34,7 @@ void ClimberCommand::Execute() {
 	if(move > 0.0 && !Robot::climber.getTopSwitch())
 		move = 0.0;
 
-	//Logger::log("Climb: %f  bottom switch: %d  top switch: %d", move, Robot::climber.getBottomSwitch(), Robot::climber.getTopSwitch());
+	Logger::log("Climb: %f  bottom switch: %d  top switch: %d", move, Robot::climber.getBottomSwitch(), Robot::climber.getTopSwitch());
 
 	Robot::climber.setMotor(move);
 }

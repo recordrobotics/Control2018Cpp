@@ -9,6 +9,8 @@
 
 #include "../Robot.h"
 
+#include "../Utils/Logger.h"
+
 SetGrabber::SetGrabber(bool open) : m_open(open) {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(&Robot::grabber);
@@ -17,17 +19,19 @@ SetGrabber::SetGrabber(bool open) : m_open(open) {
 // Called just before this Command runs the first time
 void SetGrabber::Initialize() {
 	if(m_open)
-		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
-	else
 		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kReverse);
+	else
+		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SetGrabber::Execute() {
 	if(m_open)
-		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
-	else
 		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kReverse);
+	else
+		Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kForward);
+
+	Logger::log("SetGrabber execute");
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -37,11 +41,11 @@ bool SetGrabber::IsFinished() {
 
 // Called once after isFinished returns true
 void SetGrabber::End() {
-	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
+	//Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void SetGrabber::Interrupted() {
-	Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
+	//Robot::grabber.setGrabSolenoid(frc::DoubleSolenoid::Value::kOff);
 }

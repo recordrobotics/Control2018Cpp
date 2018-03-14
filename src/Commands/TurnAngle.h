@@ -9,6 +9,8 @@
 
 #include <Commands/Command.h>
 
+#include "../Utils/MsTimer.h"
+
 enum E_TURN_ANGLE {
 	ETA_FORWARD = 0,
 	ETA_BACKWARD,
@@ -18,7 +20,7 @@ enum E_TURN_ANGLE {
 
 class TurnAngle : public frc::Command {
 public:
-	TurnAngle(double ang, E_TURN_ANGLE t);
+	TurnAngle(double ang, double linear, E_TURN_ANGLE t, ms_t timeout);
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
@@ -28,8 +30,11 @@ public:
 private:
 	E_TURN_ANGLE type;
 	double m_ang;
+	double m_linear;
 	double start_ang;
 	double end_ang;
 	bool finished;
+	ms_t m_timeout;
+	ms_t startTime;
 };
 

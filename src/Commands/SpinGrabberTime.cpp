@@ -5,49 +5,45 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <Commands/MoveGrabber.h>
+#include "SpinGrabberTime.h"
 
 #include "../Robot.h"
 
-MoveGrabber::MoveGrabber(double v, bool dir, ms_t timeout) : m_dir(dir), startTime(0), m_timeout(timeout) {
+SpinGrabberTime::SpinGrabberTime(double left, double right, ms_t time) : m_left(left), m_right(right), m_time(time), startTime(0) {
 	// Use Requires() here to declare subsystem dependencies
-	Requires(&Robot::climber);
-
-	double vel_abs = fabs(v);
-	m_vel = m_dir ? vel_abs : -vel_abs;
+	Requires(&Robot::grabber);
 }
 
 // Called just before this Command runs the first time
-void MoveGrabber::Initialize() {
+void SpinGrabberTime::Initialize() {
 	startTime = MsTimer::getMs();
 
-	Robot::climber.setMotor(m_vel);
+	Robot::grabber.setMotors(m_left, m_right);
 
-	Logger::log("MoveGrabber init");
+	Logger::log("SpinGrabber init");
 }
 
 // Called repeatedly when this Command is scheduled to run
-void MoveGrabber::Execute() {
-	Robot::climber.setMotor(m_vel);
+void SpinGrabberTime::Execute() {
+	Robot::grabber.setMotors(m_left, m_right);
+	Logger::log("Spingrabber: %f %f", m_left, m_right);
+
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool MoveGrabber::IsFinished() {
-	if((MsTimer::getMs() - startTime) > m_timeout)
-		return true;
-	else if(m_dir)
-		return !Robot::climber.getTopSwitch();
-	else
-		return !Robot::climber.getBottomSwitch();
+bool SpinGrabberTime::IsFinished() {
+	return ((MsTimer::getMs() - startTime) > m_time);
 }
 
 // Called once after isFinished returns true
-void MoveGrabber::End() {
-	Robot::climber.stopMotor();
+void SpinGrabberTime::End() {
+	Robot::grabber.stopMotors();
+
+	Logger::log("SpinGrabber end");
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MoveGrabber::Interrupted() {
-	Robot::climber.stopMotor();
+void SpinGrabberTime::Interrupted() {
+	Robot::grabber.stopMotors();
 }

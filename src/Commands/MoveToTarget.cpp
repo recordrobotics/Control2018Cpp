@@ -12,12 +12,12 @@
 
 #include "../Robot.h"
 
-void MoveToTarget::setState(E_AUTO_STATE s) : finished(false) {
+void MoveToTarget::setState(E_AUTO_STATE s) {
 	state = s;
 	lastStateChangeTime = MsTimer::getMs();
 }
 
-MoveToTarget::MoveToTarget(E_VISION_TARGET t) : target(t) {
+MoveToTarget::MoveToTarget(E_VISION_TARGET t) : target(t), finished(false) {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(&Robot::drivetrain);
 	setState(EAS_IDLE);
@@ -30,10 +30,10 @@ void MoveToTarget::Initialize() {
 	setState(EAS_MOVE);
 
 	if(target == EVT_CUBE)
-		Network::sendMode(ESM_CUBE, 10);
+		Network::sendTarget(EVT_CUBE, 10);
 	else {
-		Network::sendMode(ESM_TAPE, 10);
-		Robot.drivetrain.setLights(true);
+		Network::sendTarget(EVT_TAPE, 10);
+		Robot::drivetrain.setLights(true);
 	}
 
 	finished = false;
@@ -41,7 +41,10 @@ void MoveToTarget::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void MoveToTarget::Execute() {
-	if(state == EAS_IDLE || (!Network::leftSeesTarget() && !Network::rightSeesTarget())) {
+	bool seesleft = Network::leftSeesTarget();
+	bool seesright = Network::rightSeesTarget();
+
+	if(state == EAS_IDLE || (!seesleft && !seesright)) {
 		Robot::drivetrain.stop();
 		if((MsTimer::getMs() - lastStateChangeTime) > TIMEOUT_TIME)
 			finished = true;
@@ -68,16 +71,32 @@ void MoveToTarget::Execute() {
 
 	double forward = 0.2;
 
-	if(y < -0.85 && state == EAS_MOVE) {
-		setState(EAS_COAST);
-		Robot::drivetrain.drive(-forward, -forward);
-	}
-	else if(state == EAS_COAST && (MsTimer::getMs() - lastStateChangeTime) > COAST_MOVE_TIME) {
+	if(state == EAS_COAST && (MsTimer::getMs() - lastStateChangeTime) > COAST_MOVE_TIME) {
 		setState(EAS_IDLE);
 		Robot::drivetrain.stop();
 		finished = true;
 	}
 	else if(state == EAS_MOVE) {
+		if(target == EVT_CUBE && y < -0.85) {
+			setState(EAS_COAST);
+			Robot::drivetrain.drive(-forward, -forward);
+			return;
+		}
+		else if(target == EVT_TAPE) {
+			if(seesleft && seesright) {
+				if(fabs(Network::getRightCameraX() - Network::getLeftCameraX()) > 0.5) {
+					setState(EAS_COAST);
+					Robot::drivetrain.drive(-forward, -forward);
+					return;
+				}
+			}
+			else if(y < -0.5) {
+				setState(EAS_COAST);
+				Robot::drivetrain.drive(-forward, -forward);
+				return;
+			}
+		}
+
 		double sens = 0.4;
 		double d_sens = 0.2;
 		double max = 0.17;
@@ -110,12 +129,12 @@ bool MoveToTarget::IsFinished() {
 // Called once after isFinished returns true
 void MoveToTarget::End() {
 	Robot::drivetrain.stop();
-	Robot.drivetrain.setLights(false);
+	Robot::drivetrain.setLights(false);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void MoveToTarget::Interrupted() {
 	Robot::drivetrain.stop();
-	Robot.drivetrain.setLights(false);
+	Robot::drivetrain.setLights(false);
 }

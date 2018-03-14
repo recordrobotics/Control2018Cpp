@@ -45,13 +45,17 @@ void DrivewithJoystick::Execute() {
 		right = -(left - right) * 0.5;
 	}*/
 
+	Logger::log("Joy: %f %f", Robot::oi.getLeftJoystick().GetY(), Robot::oi.getRightJoystick().GetY());
+
 	double forward = 0.5 * (Robot::oi.getLeftJoystick().GetY() + Robot::oi.getRightJoystick().GetY());
 	double turn = 0.5 * (Robot::oi.getLeftJoystick().GetZ() + Robot::oi.getRightJoystick().GetZ());
+
+	Logger::log("forward: %f turn: %f", forward, turn);
 
 	forward = smooth(forward);
 	turn = smooth(turn);
 
-	Robot::drivetrain.driveCheesy(forward, turn, 1.0);
+	Robot::drivetrain.driveCheesy(forward, turn, -0.5);
 	//Logger::log("driving: %f %f", left, right);
 }
 

@@ -11,18 +11,25 @@
 #include <Utils/Logger.h>
 
 FILE *Logger::fp = NULL;
+pthread_mutex_t Logger::mutex;
 
 bool Logger::init(const char *path)
 {
-	fp = fopen(path, "w");
+	fp = NULL;
+
+	if(pthread_mutex_init(&mutex, NULL) == 0)
+		fp = fopen(path, "w");
 
 	return fp;
 }
 
 void Logger::log(const char *format, ...)
 {
-	if(!fp)
+	pthread_mutex_lock(&mutex);
+	if(!fp) {
+		pthread_mutex_unlock(&mutex);
 		return;
+	}
 
 	va_list args;
 	va_start(args, format);
@@ -41,10 +48,14 @@ void Logger::log(const char *format, ...)
 
 	va_end(args);
 	fflush(fp);
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::end()
 {
 	if(fp)
 		fclose(fp);
+
+	pthread_mutex_destroy(&mutex);
 }

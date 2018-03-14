@@ -5,49 +5,41 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <Commands/MoveGrabber.h>
+#include "MoveTime.h"
 
 #include "../Robot.h"
 
-MoveGrabber::MoveGrabber(double v, bool dir, ms_t timeout) : m_dir(dir), startTime(0), m_timeout(timeout) {
+MoveTime::MoveTime(double left, double right, ms_t time) : m_left(left), m_right(right), m_time(time), startTime(0) {
 	// Use Requires() here to declare subsystem dependencies
-	Requires(&Robot::climber);
-
-	double vel_abs = fabs(v);
-	m_vel = m_dir ? vel_abs : -vel_abs;
+	Requires(&Robot::drivetrain);
 }
 
 // Called just before this Command runs the first time
-void MoveGrabber::Initialize() {
+void MoveTime::Initialize() {
 	startTime = MsTimer::getMs();
 
-	Robot::climber.setMotor(m_vel);
+	Robot::drivetrain.drive(m_left, m_right);
 
-	Logger::log("MoveGrabber init");
+	Logger::log("MoveTime initialized");
 }
 
 // Called repeatedly when this Command is scheduled to run
-void MoveGrabber::Execute() {
-	Robot::climber.setMotor(m_vel);
+void MoveTime::Execute() {
+	Robot::drivetrain.drive(m_left, m_right);
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool MoveGrabber::IsFinished() {
-	if((MsTimer::getMs() - startTime) > m_timeout)
-		return true;
-	else if(m_dir)
-		return !Robot::climber.getTopSwitch();
-	else
-		return !Robot::climber.getBottomSwitch();
+bool MoveTime::IsFinished() {
+	return (MsTimer::getMs() - startTime) > m_time;
 }
 
 // Called once after isFinished returns true
-void MoveGrabber::End() {
-	Robot::climber.stopMotor();
+void MoveTime::End() {
+	Robot::drivetrain.stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MoveGrabber::Interrupted() {
-	Robot::climber.stopMotor();
+void MoveTime::Interrupted() {
+	Robot::drivetrain.stop();
 }

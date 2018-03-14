@@ -11,13 +11,15 @@
 
 #include "../TurnAngle.h"
 #include "../MoveDistance.h"
+#include "../MoveTime.h"
 
 class BSimple : public frc::CommandGroup {
 public:
-	BSimple();
+	BSimple(bool left);
 
 private:
 	TurnAngle m_turnAngle;
+	MoveTime m_turnAngleSimple;
 	MoveDistance m_moveDistance;
 };
 

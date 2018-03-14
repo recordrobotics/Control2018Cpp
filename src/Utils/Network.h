@@ -48,7 +48,7 @@ public:
 	inline static bool rightSeesTarget() { return right_sees_target; }
 
 	// Send to pis whether they should be looking for cubes or tape
-	static void sendMode(E_SEARCH_MODE m, int times);
+	static void sendTarget(E_VISION_TARGET t, int times);
 	static bool sendPacket(ip_t ip, unsigned char *buf, size_t buf_len);
 
 private:
@@ -58,13 +58,19 @@ private:
 
     static ssize_t receivePacket(unsigned char *buf, size_t buf_len, ip_t *ip, unsigned short *port, bool nullTerminate);
 
+    static pthread_mutex_t socket_mutex;
     static bool socket_init;
+    static int n_fd;
+    /** End socket mutex **/
+
+    static pthread_mutex_t thread_mutex;
     static bool thread_running;
     static bool thread_should_run;
+    /** End thread mutex **/
 
     static pthread_t thread;
-    static int n_fd;
 
+    static pthread_mutex_t params_mutex;
     static double left_camera_x;
     static double left_camera_y;
     static double right_camera_x;
@@ -75,6 +81,7 @@ private:
 
     static ip_t left_pi_ip;
     static ip_t right_pi_ip;
+    /** End params mutex **/
 };
 
 #endif /* SRC_UTILS_NETWORK_H_ */
