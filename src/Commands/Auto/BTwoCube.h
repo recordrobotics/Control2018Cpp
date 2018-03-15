@@ -9,14 +9,8 @@
 
 #include <Commands/CommandGroup.h>
 
-#include "../SetGrabber.h"
-#include "../TurnAngle.h"
-#include "../MoveToTarget.h"
-#include "../MoveGrabber.h"
-#include "../MoveTime.h"
-#include "../SpinGrabberTime.h"
-
 #include "BOneCube.h"
+#include "SecondCube.h"
 
 class BTwoCube : public frc::CommandGroup {
 public:
@@ -24,17 +18,6 @@ public:
 
 private:
 	BOneCube m_oneCube;
-	MoveTime m_moveBack;
-	MoveGrabber m_moveGrabberDown;
-	TurnAngle m_turnRightAngle;
-	SpinGrabberTime m_spinGrabberLong;
-	MoveTime m_moveForward;
-	MoveTime m_moveBackLong;
-	TurnAngle m_turnRightAngle2;
-	MoveTime m_moveForwardShort;
-	SpinGrabberTime m_spinGrabber2;
-	MoveGrabber m_moveGrabberUp2;
-	SetGrabber m_closeGrabber2;
-	SetGrabber m_openGrabber2;
+	SecondCube m_secondCube;
 };
 

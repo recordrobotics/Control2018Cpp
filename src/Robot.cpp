@@ -24,9 +24,9 @@ OI Robot::oi;
 Climber Robot::climber;
 Grabber Robot::grabber;
 
-Robot::Robot() : m_period(0.01), m_autonomousCommand(nullptr), m_moveForwardCommand(0.5, 0.5, 3000), m_AOneCubeCommand(), m_COneCubeCommand(),
-								 m_ATwoCubeCommand(false), m_CTwoCubeCommand(true), m_BLOneCubeCommand(true), m_BROneCubeCommand(false),
-								 m_BLTwoCubeCommand(true), m_BRTwoCubeCommand(false), m_BGoAwayLeftCommand(true), m_BGoAwayRightCommand(false)
+Robot::Robot() : m_period(0.01), m_autonomousCommand(nullptr), m_moveForwardCommand(0.5, 0.5, 3000), m_ATwoCubeCommand(false),
+								 m_CTwoCubeCommand(true), m_BLOneCubeCommand(true), m_BROneCubeCommand(false), m_BLTwoCubeCommand(true),
+								 m_BRTwoCubeCommand(false), m_BGoAwayLeftCommand(true), m_BGoAwayRightCommand(false)
 				/*m_BLCommand(true), m_BRCommand(false),
 				 m_BSimpleLeftCommand(true), m_BSimpleRightCommand(false), m_CLCommand(true),
 				 m_ARCommand(false), m_A_CSimpleCommand(0.5, 0.5, 3500), m_supersimpleCommand(0.5, 0.5, 3500),
