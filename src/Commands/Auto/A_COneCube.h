@@ -10,7 +10,7 @@
 #include <Commands/CommandGroup.h>
 
 #include "../SetGrabber.h"
-#include "../MoveToTarget.h"
+//#include "../MoveToTarget.h"
 #include "../MoveGrabber.h"
 #include "../MoveTime.h"
 #include "../SpinGrabberTime.h"
@@ -21,7 +21,7 @@ public:
 
 private:
 	SetGrabber m_closeGrabber;
-	MoveToTarget m_moveToTape;
+	//MoveToTarget m_moveToTape;
 	MoveTime m_moveToTapeSimple;
 	MoveGrabber m_moveGrabberUp;
 	SpinGrabberTime m_spinGrabber;

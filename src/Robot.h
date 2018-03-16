@@ -8,7 +8,7 @@
 #include "OI.h"
 #include <TimedRobot.h>
 #include <Commands/Command.h>
-#include <Commands/MoveToTarget.h>
+//#include <Commands/MoveToTarget.h>
 #include <Commands/CommandGroup.h>
 #include <SmartDashboard/SendableChooser.h>
 #include <SmartDashboard/SmartDashboard.h>
@@ -20,7 +20,6 @@
 #include "Commands/Auto/BTwoCube.h"
 
 #include "Commands/Auto/BSimple.h"
-#include "Commands/SmoothMove.h"
 
 // List of autonomous modes to be selected by driver
 enum E_AUTO_CHOOSE {

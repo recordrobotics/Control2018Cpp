@@ -11,7 +11,7 @@
 
 BOneCube::BOneCube(bool left) :  m_closeGrabber(false), m_turnAngle(left ? -ANGLE : ANGLE, 0.0, ETA_FORWARD, 1000),
 						m_turnAngleSimple(left ? 0.0 : 0.3, left ? 0.3 : 0.0, 1800), m_moveGrabberUp(1.0, true, 3000),
-						m_moveToTape(EVT_TAPE), m_moveToTapeSimple(0.4, 0.4, 3000), m_turnAngle2(left ? ANGLE : -ANGLE, 0.0, ETA_FORWARD, 1000),
+						/*m_moveToTape(EVT_TAPE), */m_moveToTapeSimple(0.4, 0.4, 3000), m_turnAngle2(left ? ANGLE : -ANGLE, 0.0, ETA_FORWARD, 1000),
 						m_turnAngleSimple2(left ? 0.3 : 0.0, left ? 0.0 : 0.3, 1000), m_openGrabber(true), m_spinGrabber(1.0, -1.0, 2000)
 {
 	AddSequential(&m_closeGrabber);

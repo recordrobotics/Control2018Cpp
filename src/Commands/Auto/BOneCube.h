@@ -11,7 +11,7 @@
 
 #include "../SetGrabber.h"
 #include "../TurnAngle.h"
-#include "../MoveToTarget.h"
+//#include "../MoveToTarget.h"
 #include "../MoveGrabber.h"
 #include "../MoveTime.h"
 #include "../SpinGrabberTime.h"
@@ -24,7 +24,7 @@ private:
 	SetGrabber m_closeGrabber;
 	TurnAngle m_turnAngle;
 	MoveTime m_turnAngleSimple;
-	MoveToTarget m_moveToTape;
+	//MoveToTarget m_moveToTape;
 	MoveTime m_moveToTapeSimple;
 	MoveGrabber m_moveGrabberUp;
 	TurnAngle m_turnAngle2;

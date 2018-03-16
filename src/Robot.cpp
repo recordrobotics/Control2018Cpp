@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include <Commands/Command.h>
-#include <Commands/MoveToTarget.h>
+//#include <Commands/MoveToTarget.h>
 #include <Commands/Scheduler.h>
 #include <TimedRobot.h>
 #include <Utils/MsTimer.h>
@@ -16,7 +16,7 @@
 
 #include "RobotMap.h"
 
-#include "Utils/Network.h"
+//#include "Utils/Network.h"
 #include "Utils/Logger.h"
 
 Drivetrain Robot::drivetrain;
@@ -77,7 +77,7 @@ bool Robot::getAuto()
 void Robot::RobotInit() {
 	MsTimer::init();
 	Logger::init("/log/log.txt");
-	Network::init();
+	//Network::init();
 	Logger::log("Begin!");
 
 	autoMap.insert({ { EAC_ONECUBE, ESP_LEFT, ES_LEFT }, &m_COneCubeCommand });
