@@ -39,14 +39,31 @@ void GrabberCommand::Execute() {
 
 	double left = 0.0, right = 0.0;
 
-	if(left_pov != -1 && (left_pov >= 315 || left_pov <= 45)) {
+	if(left_pov == 0) {
 		left = maxGrabberMotorSpeed;
 		right = -maxGrabberMotorSpeed;
 	}
-	else if(left_pov >= 135 && left_pov <= 225) {
+	else if(left_pov == 180) {
 		left = -maxGrabberMotorSpeed;
 		right = maxGrabberMotorSpeed;
 	}
+	else if(left_pov  == 90) {
+		left = maxGrabberMotorSpeed;
+		right = maxGrabberMotorSpeed;
+	}
+	else if(left_pov  == 270) {
+		left = -maxGrabberMotorSpeed;
+		right = -maxGrabberMotorSpeed;
+	}
+
+//	if(left_pov != -1 && (left_pov >= 315 || left_pov <= 45)) {
+//		left = maxGrabberMotorSpeed;
+//		right = -maxGrabberMotorSpeed;
+//	}
+//	else if(left_pov >= 135 && left_pov <= 225) {
+//		left = -maxGrabberMotorSpeed;
+//		right = maxGrabberMotorSpeed;
+//	}
 
 	/*if(right_pov >= 45 && right_pov <= 135)
 		right = -maxGrabberMotorSpeed;
