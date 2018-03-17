@@ -7,10 +7,10 @@
 
 #include <Commands/Auto/SecondCube.h>
 
-SecondCube::SecondCube(bool left) : m_moveBack(-0.3, -0.3, 400), m_moveGrabberDown(1.0, false, 3000),
-									m_turnRightAngle(left ? 85.0 : -85.0, -0.0, ETA_SPOT, 3000), m_spinGrabberLong(-1.0, 1.0, 2000),
+SecondCube::SecondCube(bool left) : m_moveBack(-0.3, -0.3, 400), m_moveGrabberDown(0.6, false, 3000),
+									m_turnRightAngle(left ? 85.0 : -85.0, 0.0, ETA_SPOT, 3000), m_spinGrabberLong(-1.0, 1.0, 2000),
 									m_moveForward(0.4, 0.4, 2000), m_moveBackLong(-0.4, -0.4, 2000),
-									m_turnRightAngle2(left ? -85.0 : 85.0, 0.0, ETA_SPOT, 1000),
+									m_turnRightAngle2(left ? -85.0 : 85.0, 0.2, ETA_SPOT, 1000),
 									m_moveForwardShort(0.3, 0.3, 400), m_spinGrabber2(1.0, -1.0, 2000),
 									m_moveGrabberUp2(1.0, true, 3000), m_closeGrabber2(false), m_openGrabber2(true)
 {

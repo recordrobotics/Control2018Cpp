@@ -34,15 +34,15 @@ void TurnAngle::Execute() {
 	double ang_r = Robot::drivetrain.getAngleRate();
 
 	// Previously 0.1
-	double a_p = 0.02;
-	double a_d = 0.001;
-	double a_m = 0.4;
+	double a_p = 0.1;
+	double a_d = 0.003;
+	double a_m = 0.5;
 	double thresh = 2.0;
 	double r_thresh = 100.0;
 
 	Logger::log("ang: %f ang_r: %f final: %f", ang, ang_r, end_ang);
 
-	if((fabs(ang - end_ang) < thresh/* && fabs(ang_r) < r_thresh*/) || (MsTimer::getMs() - startTime) > m_timeout) {
+	if((fabs(ang - end_ang) < thresh && fabs(ang_r) < r_thresh) || (MsTimer::getMs() - startTime) > m_timeout) {
 		finished = true;
 		return;
 	}

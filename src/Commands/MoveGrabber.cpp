@@ -39,6 +39,7 @@ bool MoveGrabber::IsFinished() {
 		return !Robot::climber.getTopSwitch();
 	else
 		return !Robot::climber.getBottomSwitch();
+//	return false;
 }
 
 // Called once after isFinished returns true

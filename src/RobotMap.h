@@ -32,8 +32,8 @@ constexpr int leftmotor2Port = 1;
 constexpr int rightmotor1Port = 2;
 constexpr int rightmotor2Port = 3;
 constexpr int climbmotorPort = 4;
-constexpr int leftgrabberPort = 5;
-constexpr int rightgrabberPort = 6;
+constexpr int leftgrabberPort = 5; // Change dis
+constexpr int rightgrabberPort = 6; // Change dis
 
 // Other actuators
 constexpr int grabsolenoidmodulePort = 0;

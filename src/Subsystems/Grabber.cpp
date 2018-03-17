@@ -76,6 +76,8 @@ void Grabber::adjust(double speed, bool direction)
 	}
 }
 
+// 1.0, -1.0 is to eject the cube,
+// -1.0, 1.0 is to succ in the cube
 void Grabber::setMotors(double left, double right)
 {
 	left_motor.Set(left);
